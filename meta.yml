@@ -1,0 +1,70 @@
+---
+fullname: fft
+shortname: fft
+organization: thery
+opam_name: coq-fft
+community: false
+dune: false
+action: true
+
+synopsis: Formalising FFT in Coq
+
+description: |-
+  This repository contains Coq-proofs about FFT algorithm
+  
+authors:
+- name: Laurent Théry
+
+maintainers:
+- name: Laurent Théry
+  nickname: thery
+
+opam-file-maintainer: thery@sophia.inria.fr
+
+license:
+  fullname: MIT License
+  identifier: MIT
+
+supported_coq_versions:
+  text: '8.20 or later'
+  opam: '{(>= "8.20")}'
+
+dependencies:
+- opam:
+    name: coq-bignums
+  description: |-
+    [Bignums](https://github.com/coq/bignums) same version as Coq
+- opam:
+    name: coq-mathcomp-ssreflect
+    version: '{(>= "2.3.0")}'
+  description: |-
+    [MathComp ssreflect 2.3 or later](https://math-comp.github.io)
+- opam:
+    name: coq-flocq
+    version: '{(>= "4.2.0")}'
+  description: |-
+    [Flocq 4.1.3 or later](https://gitlab.inria.fr/flocq/flocq.git)
+- opam:
+    name: coq-interval
+    version: '{(>= "4.11.1")}'
+  description: |-
+    [Interval 4.11.1 or later](https://gitlab.inria.fr/coqinterval/interval)
+- opam:
+    name: coq-coquelicot
+    version: '{(>= "3.4.2")}'
+  description: |-
+    [Coquelicot 3.4.2 or later](https://gitlab.inria.fr/coquelicot/coquelicot)
+
+
+tested_coq_opam_versions:
+- version: '2.3.0-coq-8.20'
+  repo: 'mathcomp/mathcomp'
+
+namespace: fft
+
+keywords:
+- name: fft
+- name: FFT polynomials Coq
+
+
+---

@@ -1,0 +1,35 @@
+# This file was generated from `meta.yml`, please do not edit manually.
+# Follow the instructions on https://github.com/coq-community/templates to regenerate.
+
+opam-version: "2.0"
+maintainer: "thery@sophia.inria.fr"
+version: "dev"
+
+homepage: "https://github.com/thery/fft"
+dev-repo: "git+https://github.com/thery/fft.git"
+bug-reports: "https://github.com/thery/fft/issues"
+license: "MIT"
+
+synopsis: "Formalising FFT in Coq"
+description: """
+This repository contains Coq-proofs about FFT algorithm"""
+
+build: [make "-j%{jobs}%"]
+install: [make "install"]
+depends: [
+  "coq" {(>= "8.20")}
+  "coq-bignums" 
+  "coq-mathcomp-ssreflect" {(>= "2.3.0")}
+  "coq-flocq" {(>= "4.2.0")}
+  "coq-interval" {(>= "4.11.1")}
+  "coq-coquelicot" {(>= "3.4.2")}
+]
+
+tags: [
+  "keyword:fft"
+  "keyword:FFT polynomials Coq"
+  "logpath:fft"
+]
+authors: [
+  "Laurent Théry"
+]

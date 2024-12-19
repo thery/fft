@@ -1,0 +1,20 @@
+-arg -w -arg -notation-overridden
+-arg -w -arg -ambiguous-paths
+
+-I .
+-R . fft
+Nmore.v
+Rmore.v
+Cmore.v
+Fmore.v
+Rstruct.v
+Cstruct.v
+digitn.v
+ifloat.v
+kahan_mult.v
+brent.v
+mfft.v
+fft.v
+upoly.v
+fftcv.v
+
