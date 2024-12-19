@@ -12,7 +12,7 @@ Follow the instructions on https://github.com/coq-community/templates to regener
 
 
 
-This repository contains Coq-proofs about FFT algorithm
+This repository contains Coq-proofs about the Fast Fourier Transform
 
 ## Meta
 

@@ -12,7 +12,7 @@ license: "MIT"
 
 synopsis: "Formalising FFT in Coq"
 description: """
-This repository contains Coq-proofs about FFT algorithm"""
+This repository contains Coq-proofs about the Fast Fourier Transform"""
 
 build: [make "-j%{jobs}%"]
 install: [make "install"]
