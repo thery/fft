@@ -2,7 +2,7 @@ Require Import ZArith.
 From mathcomp Require Import all_ssreflect all_algebra.
 Require Import String Rstruct Reals Cstruct Psatz Cmore.
 Require Import Coquelicot.Coquelicot.
-Require Import digitn mfft.
+Require Import digitn mfft upoly.
 
 Notation "m ^ n" := (expn m n) : nat_scope.
 
@@ -1054,12 +1054,12 @@ Export V.
 
 From Bignums Require Import BigZ.
 
-Definition prec := 53%bigZ.
+
+Section Prec.
+
+Variable prec : BigZ.t.
 
 Definition mkfZ z := mkCI (mkIz prec z) (mkIz prec 0).
-
-Compute onlyOnelC prec 
-  (ci_fft_xmul prec 3%nat [:: mkfZ (-1); mkfZ 0; mkfZ 1] [:: mkfZ 0; mkfZ (-2); mkfZ 1]).
 
 Definition mylog (n : nat) := (Nat.log2 (n.-1)).+1.
 
@@ -1070,8 +1070,6 @@ rewrite /mylog /= -pow_expn.
 have [] := Nat.log2_spec n.+1; first by apply/ltP.
 by move => _ /ltP.
 Qed.
-
-Require Import upoly.
 
 Fixpoint lzplus (l1 l2 : seq Z) := 
   if l1 is a1 :: l3 then
@@ -1421,22 +1419,6 @@ Definition lz2P R l := if l is some l then lz2Paux R 0 l else 0.
 Lemma lz_correct R l : lz2P R (some l) = int2Poly R [seq z2int i | i <- l].
 Proof. by rewrite /= lz2Paux_correct mulr1. Qed.
 
-Definition v_ex := Pmult (Padd (Padd (Pxn 2) Px) (Pcons 1)) 
-               (Padd (Pxn 2) (Popp (Pcons 1))).
-
-Eval cbn delta [pexpr2poly v_ex] beta iota in
-  pexpr2poly (GRing.Ring.clone _ C) v_ex.
-
-Definition r_ex := Eval compute in pexpr2lZ v_ex.
-
-Eval lazy delta [lz2P lz2Paux lzplus lzisZ  z2P r_ex Z.to_nat Pos.to_nat
-    Pos.iter_op Init.Nat.add Z.opp size rev catrev predn] beta iota zeta in 
-  lz2P (GRing.Ring.clone _ C) r_ex.
-
-Eval lazy delta [lz2P lz2Paux lzplus lzisZ  z2P r_ex Z.to_nat Pos.to_nat
-    Pos.iter_op Init.Nat.add Z.opp size rev catrev predn] beta iota zeta in 
-  lz2P (GRing.Ring.clone _ C) r_ex.
-
 Lemma pexpr2lZ_correct' R e l : 
   pexpr2lZ e = Some l -> pexpr2poly R e = lz2Paux R 0 l.
 Proof.
@@ -1447,45 +1429,4 @@ apply: ptransferE Hr.
 by move=> m n; rewrite !natz => [] [].
 Qed.
 
-Ltac getExpr term := 
-match term with
-| 0 => constr:(Pcons 0)
-| 1 => constr:(Pcons 1)
-| ((?a)%:R) => constr:(Pcons a)
-| 'X^?n => constr:(Pxn n)
-| 'X => constr:(Px)
-| - ?X =>  let v := getExpr X in constr:(Popp v)
-| ?X + ?Y => let p1 := getExpr X in
-             let p2 := getExpr Y in constr:(Padd p1 p2)
-| ?X * ?Y => let p1 := getExpr X in
-             let p2 := getExpr Y in constr:(Pmult p1 p2)
-end.
-
-Ltac left_simpl := 
-let H := fresh "H" in 
-let vl := fresh "vl" in 
-(match goal with 
-| |- ?X = _ => 
-  let e := getExpr X in
-  let ll := eval compute in (pexpr2lZ e) in 
-  match ll with 
-  | Some ?l => have H := (@pexpr2lZ_correct' _ e l); pose vl := ll 
-  | _ => idtac "Error in left_simpl"
-  end
-end); 
-rewrite [LHS]H; [clear H vl|vm_cast_no_check (refl_equal vl)];
-lazy delta [lz2P lz2Paux lzplus lzisZ  z2P Z.to_nat Pos.to_nat
-    Pos.iter_op Init.Nat.add Z.opp size rev catrev predn] beta iota zeta.
-
-Parameter R : ringType.
-Axiom foo : forall P, P.
-
-Goal ('X^2 + 'X + 2) * ('X^2 - 32 * 'X)  = 0 :> {poly R}.
-left_simpl.
-apply: foo.
-Qed.
-
-Goal ('X^2 - 'X^13) * ('X^2 - 1) * 'X^15 = 0 :> {poly C}.
-left_simpl.
-apply: foo.
-Qed.
+End Prec.
