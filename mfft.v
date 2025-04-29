@@ -190,7 +190,7 @@ rewrite poly_def -(@big_mkord _ (0 : {poly R}) +%R (2 ^ n.+1) xpredT
     (fft n (w ^+ 2) (odd_poly p))`_(i %% 2 ^ n) * w ^+ i) *: 'X^i)).
 have F : (2 ^ n <= 2 ^ n.+1)%N by rewrite leq_exp2l.
 apply: sym_equal.
-rewrite (big_cat_nat _ _ _ _ F) //=.
+rewrite (big_cat_nat _ F) //=.
 rewrite big_nat; under eq_bigr do rewrite modn_small // ; rewrite -big_nat /=.
 rewrite -(add0n (2 ^ n)%N) big_addn add0n.
 rewrite [(2 ^ n.+1)%N]expnS mul2n -addnn addnK.
@@ -246,7 +246,7 @@ apply: leq_trans (size_sum _ _ _) _.
 apply/bigmax_leqP_seq => i _ _.
 apply: leq_trans (size_sum _ _ _) _.
 apply/bigmax_leqP_seq => j _ _.
-apply: leq_trans (size_add _ _) _.
+apply: leq_trans (size_polyD _ _) _.
 rewrite geq_max; apply/andP; split; 
     apply: leq_trans (size_scale_leq _ _) _; rewrite size_polyXn.
   apply: leq_trans (bound_step (ltn_ord i) (ltn_ord j)).
@@ -357,7 +357,7 @@ rewrite [X in X + _ = _]big1 ?add0r => [|j _]; last first.
   apply: leq_trans (_ : 2 ^ n.+1 <= _)%N.
     apply: leq_trans (size_sum _ _ _) _.
     apply/bigmax_leqP => k _.
-    apply: leq_trans (size_add _ _) _.
+    apply: leq_trans (size_polyD _ _) _.
     rewrite geq_max; apply/andP; split; apply: leq_trans (size_scale_leq _ _) _.
       rewrite size_polyXn.
       by apply: leq_trans (ltn_ord _) _; rewrite leq_exp2l.
@@ -749,8 +749,8 @@ rewrite -size_poly_leq0 -ltnNge in p2_neq0.
 rewrite /fft_mul.
 suff -> : poly_mul (fft n w p1) (fft n w p2) = fft n w (p1 * p2).
   apply: fftK => //.
-  by apply: leq_trans (size_mul_leq _ _) _.
-rewrite [in RHS]fftE //; last by apply: leq_trans (size_mul_leq _ _) _.
+  by apply: leq_trans (size_polyMleq _ _) _.
+rewrite [in RHS]fftE //; last by apply: leq_trans (size_polyMleq _ _) _.
 apply/polyP => i.
 rewrite coef_poly_mul !(coef_poly, fftE) //; last 2 first.
 - by case: (size p1) p1_neq0 sL => //= k _ /(leq_trans _); apply;

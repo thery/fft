@@ -849,7 +849,7 @@ move=> Hc; rewrite /cnorm -sqrt_mult_alt; last by lra.
 congr sqrt.
 rewrite cnorm2_step_exact (cnorm2_scalen _ (_ : (n <= (m + n))%N)); last first.
   by rewrite leq_addl.
-rewrite -/x [RHS](@GRing.mulr_sumr (GRing.Ring.clone _ R)).
+rewrite -/x [RHS](@GRing.mulr_sumr (GRing.PzRing.clone _ R)).
 elim/big_ind2: _ => /= [|x1 x2 y1 y2 H1 H2|i _].
 - by rewrite /GRing.zero /=; lra.
 - by rewrite /GRing.add /=; lra.
@@ -876,7 +876,7 @@ rewrite -(sqrt_pow2 _ om_ge_0) -sqrt_mult_alt; last by apply: cnorm2_ge0.
 apply: sqrt_le_1_alt.
 rewrite (cnorm2_scalen _ (_ : (n <= (m + n))%N)) ?leq_addl //.
 rewrite (cnorm2_scalen _ (_ : (n <= (m + n))%N)) ?leq_addl //.
-rewrite [X in _ <= X](@GRing.mulr_suml (GRing.Ring.clone _ R)).
+rewrite [X in _ <= X](@GRing.mulr_suml (GRing.PzRing.clone _ R)).
 apply: leR_sum => i _ _.
 rewrite !get_csub ?scalen_lt ?scalen_lt_k ?leq_addl //.
 rewrite !get_step_exact ?scalen_lt_k ?scalen_lt ?leq_addl //.

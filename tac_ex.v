@@ -43,7 +43,7 @@ rewrite [LHS]H; [clear H vl|vm_cast_no_check (refl_equal vl)];
 lazy delta [lz2P lz2Paux lzplus lzisZ  z2P Z.to_nat Pos.to_nat
     Pos.iter_op Init.Nat.add Z.opp size rev catrev predn] beta iota zeta.
 
-Parameter R : ringType.
+Parameter R : nzRingType.
 Axiom foo : forall P, P.
 
 Goal ('X^2 + 'X + 2) * ('X^2 - 32 * 'X)  = 0 :> {poly R}.

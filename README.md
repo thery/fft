@@ -22,10 +22,10 @@ This repository contains Coq-proofs about the Fast Fourier Transform
 - Compatible Coq versions: 8.20 or later
 - Additional dependencies:
   - [Bignums](https://github.com/coq/bignums) same version as Coq
-  - [MathComp ssreflect 2.3 or later](https://math-comp.github.io)
-  - [Flocq 4.1.3 or later](https://gitlab.inria.fr/flocq/flocq.git)
+  - [MathComp ssreflect 2.4 or later](https://math-comp.github.io)
+  - [Flocq 4.2.1 or later](https://gitlab.inria.fr/flocq/flocq.git)
   - [Interval 4.11.1 or later](https://gitlab.inria.fr/coqinterval/interval)
-  - [Coquelicot 3.4.2 or later](https://gitlab.inria.fr/coquelicot/coquelicot)
+  - [Coquelicot 3.4.3 or later](https://gitlab.inria.fr/coquelicot/coquelicot)
 - Coq namespace: `fft`
 - Related publication(s): none
 

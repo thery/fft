@@ -25,11 +25,11 @@ HB.instance Definition _ := GRing.isZmodule.Build C
 Fact C1_neq_0 : 1 != 0 :> C.
 Proof. by apply/eqP=> /RtoC_inj; lra. Qed.
 
-HB.instance Definition _ := GRing.Nmodule_isSemiRing.Build C
+HB.instance Definition _ := GRing.Nmodule_isNzSemiRing.Build C
   Cmult_assoc Cmult_1_l Cmult_1_r
   Cmult_plus_distr_r Cmult_plus_distr_l Cmult_0_l Cmult_0_r C1_neq_0.
 
-HB.instance Definition _ := GRing.Ring_hasCommutativeMul.Build C
+HB.instance Definition _ := GRing.PzRing_hasCommutativeMul.Build C
   Cmult_comm.
 
 Import Monoid.
@@ -68,7 +68,7 @@ Qed.
 Lemma Cinvx_out : {in predC unit_C, Cinvx =1 id}.
 Proof. by move=> x; rewrite inE /= /Cinvx -if_neg => ->. Qed.
 
-HB.instance Definition _ := GRing.Ring_hasMulInverse.Build C
+HB.instance Definition _ := GRing.NzRing_hasMulInverse.Build C
   CmultRinvx CinvxRmult intro_unit_C Cinvx_out.
 
 Lemma C_idomainMixin (x y : C) : (x * y = 0)%RR -> (x == 0%RR) || (y == 0%RR).
@@ -98,7 +98,7 @@ Qed.
 Lemma mulC_sumr (I : Type) (r : seq I) 
          (P : I -> bool) (F : I -> C) (x : C) : 
   (x * (\sum_(i <- r | P i) F i)%RR)%C = (\sum_(i <- r | P i) (x * F i)%C)%RR.
-Proof. by apply: (@GRing.mulr_sumr (GRing.Ring.clone _ C)). Qed.
+Proof. by apply: (@GRing.mulr_sumr (GRing.PzRing.clone _ C)). Qed.
 
 Lemma sum_RtoC (A : Type) (l : seq A) (P : A -> bool) (f : A -> R) : 
  (RtoC (\sum_(i <- l | P i) (f i)) = \sum_(i <- l | P i) (RtoC (f i)))%RR.
@@ -110,7 +110,7 @@ Qed.
 
 (* Algebraic operatopns on sequences of complex numbers                       *)
 
-Definition get (T : ringType) (l : seq T) (i : nat) :=
+Definition get (T : pzRingType) (l : seq T) (i : nat) :=
   (l `_ i)%RR.
 
 Definition cadd (n : nat) (l1  l2 : seq C) : seq C := 

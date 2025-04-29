@@ -559,7 +559,7 @@ rewrite !(size_ci_map2, size_ci_pow, IH).
 by rewrite !(minnn, addn0) addnn -mul2n expnS.
 Qed.
 
-Lemma ci_odd_correct (A : ringType) (l : seq A) :
+Lemma ci_odd_correct (A : nzRingType) (l : seq A) :
   Poly (ci_odd l) = odd_poly (Poly l).
 Proof.
 elim: (size _).+1 {-2}l  (leqnn (size l).+1) => // n IH [|a [|b {}l]] /=.
@@ -571,14 +571,14 @@ by rewrite !odd_polyD odd_polyMX even_polyD even_polyC even_polyMX odd_polyC
            addr0.
 Qed.
 
-Lemma ci_even_correct (A : ringType) (l : seq A) : 
+Lemma ci_even_correct (A : nzRingType) (l : seq A) : 
   Poly (ci_even l) = even_poly (Poly l).
 Proof.
 case: l => /= [|a l]; first by rewrite even_polyC.
 by rewrite !cons_poly_def ci_odd_correct even_polyD even_polyMX even_polyC.
 Qed.
 
-Lemma ci_pow_correct (R : ringType) w (l : seq R) : 
+Lemma ci_pow_correct (R : nzRingType) w (l : seq R) : 
   Poly (ci_pow (Cmult w)%C l 1) = \poly_(i < size l) w^+i.
 Proof.
 suff F j : Poly (ci_pow (Cmult w)%C l (w^+j)) = \poly_(i < size l) w^+(i + j).
@@ -640,7 +640,7 @@ rewrite addrC; congr (_ + _).
 by rewrite mulrAC exprS ['X * _]mulrC.
 Qed.
 
-Lemma polyD (R1 : ringType) (a b : nat) (E : nat -> R1): 
+Lemma polyD (R1 : nzRingType) (a b : nat) (E : nat -> R1): 
   \poly_(i < a + b) E i = 
   \poly_(i < a) E i + 'X^a * \poly_(i < b) E (a + i)%nat.
 Proof.
@@ -894,7 +894,7 @@ elim: n => //= n IH.
 by rewrite Zpos_P_of_succ_nat succ_IZR RtoC_plus IH -natr1.
 Qed.
 
-Lemma prim_neq0 (R :ringType) n (w : R) :
+Lemma prim_neq0 (R : nzRingType) n (w : R) :
   (0 < n)%nat -> n.-primitive_root w -> w != 0.
 Proof.
 move=> n_pos /prim_expr_order; case : (w =P 0) => // ->.
@@ -1300,7 +1300,8 @@ have isZf : isZC fmul.
 move=> /(_ isZf) fmulE.
 rewrite fmulE in H4.
 rewrite /zPoly.
-have /= := @ptransferM (GRing.Ring.clone _ C) (GRing.Ring.clone _ int) Cchar.
+have /= := 
+  @ptransferM (GRing.PzRing.clone _ C) (GRing.PzRing.clone _ int) Cchar.
 have F x : Poly [seq z2int i  | i <- x] = int2Poly _ [seq z2int i  | i <- x].
   elim: x => //= x xl IH.
   rewrite cons_poly_def int2Poly_cons IH addrC mulrC; congr (_ + _).
@@ -1362,7 +1363,7 @@ case: a => //; rewrite ?int2Poly_cons.
 by move=> /IH->; rewrite add0r mulr0.
 Qed.
 
-Definition z2P (R : ringType) (a : Z) (n : nat) : {poly R} := 
+Definition z2P (R : nzRingType) (a : Z) (n : nat) : {poly R} := 
   if a is 0%Z then 0 else
   if a is (-1)%Z then 
     if n is n1.+1 then 
@@ -1391,7 +1392,7 @@ case: a => [p|p|].
 by case: n => [|[|n]] //; rewrite ?mulr1 /= !rmorphN //= mulNr mul1r.
 Qed.
   
-Fixpoint lz2Paux (R : ringType) (n: nat) (l : seq Z) : {poly R} :=
+Fixpoint lz2Paux (R : nzRingType) (n: nat) (l : seq Z) : {poly R} :=
   if l is a :: l then 
     if a is 0%Z then lz2Paux R n.+1 l 
     else if lzisZ l then ((z2P R a n))%R 
