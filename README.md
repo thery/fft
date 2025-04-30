@@ -31,7 +31,15 @@ This repository contains Coq-proofs about the Fast Fourier Transform
 
 ## Building and installation instructions
 
-To build and install manually, do:
+The easiest way to install the latest released version of fft
+is via [OPAM](https://opam.ocaml.org/doc/Install.html):
+
+```shell
+opam repo add coq-released https://coq.inria.fr/opam/released
+opam install coq-fft
+```
+
+To instead build and install manually, do:
 
 ``` shell
 git clone https://github.com/thery/fft.git

@@ -11,7 +11,7 @@ synopsis: Formalising FFT in Coq
 
 description: |-
   This repository contains Coq-proofs about the Fast Fourier Transform
-  
+
 authors:
 - name: Laurent Théry
 
