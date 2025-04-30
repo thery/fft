@@ -4,6 +4,7 @@ name: Docker CI
 
 on:
   workflow_dispatch
+on:
   push:
     branches:
       - master
