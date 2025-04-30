@@ -2,8 +2,7 @@
 # Follow the instructions on https://github.com/coq-community/templates to regenerate.
 name: Docker CI
 
-on:
-  workflow_dispatch
+on:workflow_dispatch
 on:
   push:
     branches:
