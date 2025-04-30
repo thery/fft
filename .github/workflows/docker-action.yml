@@ -3,6 +3,7 @@
 name: Docker CI
 
 on:
+  workflow_call
   push:
     branches:
       - master
