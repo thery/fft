@@ -1,5 +1,5 @@
 ---
-fullname: fft
+fullname: Fft
 shortname: fft
 organization: thery
 opam_name: coq-fft
