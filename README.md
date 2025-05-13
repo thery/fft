@@ -19,7 +19,7 @@ This repository contains Coq-proofs about the Fast Fourier Transform
 - Author(s):
   - Laurent Théry
 - License: [MIT License](LICENSE)
-- Compatible Coq versions: 8.20 or later
+- Compatible Coq versions: 9.0 or later
 - Additional dependencies:
   - [Bignums](https://github.com/coq/bignums) same version as Coq
   - [MathComp ssreflect 2.4 or later](https://math-comp.github.io)
