@@ -1,5 +1,5 @@
 From mathcomp Require Import all_ssreflect.
-Require Import Reals  Psatz.
+From Stdlib Require Import Reals  Psatz.
 From Coquelicot Require Import Coquelicot.
 Require Import Rmore.
 
@@ -203,7 +203,7 @@ case: k Hk => [|mk|mk].
   move/Rmult_integral=> []; first by lra.
   by have := Rinv_neq_0_compat (INR n); lra.
 - have -> : IZR (Z.pos mk) = INR (Pos.to_nat mk).
-    by rewrite INR_IZR_INZ positive_nat_Z.
+    by rewrite INR_IZR_INZ Znat.positive_nat_Z.
   have mk_pos : 0 < INR (Pos.to_nat mk).
     by rewrite -INR_0; apply/lt_INR/Pos2Nat.is_pos.
   move=> Hmk; apply/eqP; rewrite eqn_leq.
@@ -225,7 +225,7 @@ case: k Hk => [|mk|mk].
     by have := RtoC_inj _ _ Hc; lra.
   by rewrite H2mk mulnC leq_mul2r mk_gt1 orbT.
 have -> : IZR (Z.neg mk) = (- INR (Pos.to_nat mk))%R.
-  by rewrite (opp_IZR (Z.pos mk)) INR_IZR_INZ positive_nat_Z.
+  by rewrite (opp_IZR (Z.pos mk)) INR_IZR_INZ Znat.positive_nat_Z.
 move=> Hmk.
 suff : (0 < - INR (Pos.to_nat mk) * PI)%R.
   suff : (0 < INR (Pos.to_nat mk))%R by nra.

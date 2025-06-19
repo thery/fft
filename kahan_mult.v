@@ -1,6 +1,6 @@
 (* Copyright (c)  Inria. All rights reserved. *)
 
-Require Import Reals  Psatz.
+From Stdlib Require Import Reals  Psatz.
 From Flocq Require Import Core Relative Sterbenz Operations.
 From Flocq Require Import Mult_error.
 From mathcomp Require Import all_ssreflect.
@@ -241,11 +241,12 @@ Let iRNE := iRNE beta Hp2 choice.
 Definition mW' := iRN (mB * mC).
 Let mw' := IZR mW'.
 
-Definition mE := (if Z_le_dec 0 sigma then mW' - mB * mC else 
+Definition mE := (if ZArith_dec.Z_le_dec 0 sigma then mW' - mB * mC else 
                   (mW' - mB * mC) * Z.pow beta (- sigma))%Z.
 Let me := IZR mE.
 
-Definition mF := (if Z_le_dec 0 sigma then mA * mD * Z.pow beta sigma - mW' else 
+Definition mF := 
+  (if ZArith_dec.Z_le_dec 0 sigma then mA * mD * Z.pow beta sigma - mW' else 
                   mA * mD - mW' * Z.pow beta (- sigma))%Z.
 Let mf := IZR mF.
 
@@ -265,8 +266,9 @@ Lemma mu_def :
        x' = mx' * pow mu].
 Proof.
 pose mu := Z.min (cexp a + cexp d) (cexp b + cexp c).
-have [sigma_pos|sigma_neg] := Z_le_dec 0 sigma.
-  have Hl : is_left (Z_le_dec 0 sigma) by case: Z_le_dec=> //; lia.
+have [sigma_pos|sigma_neg] := ZArith_dec.Z_le_dec 0 sigma.
+  have Hl : is_left (ZArith_dec.Z_le_dec 0 sigma) 
+    by case: ZArith_dec.Z_le_dec=> //; lia.
   have mxE : mx = ma * md * pow sigma - mb * mc.
     rewrite /mx plus_IZR /mF /mE Hl 2!minus_IZR 3!mult_IZR.
     by rewrite -maE -mdE -mbE -mcE IZR_Zpower //; lra.
@@ -293,7 +295,8 @@ have [sigma_pos|sigma_neg] := Z_le_dec 0 sigma.
   exists mu; split => //.
   rewrite /mx' -iRNE -RN_mult_pow plus_IZR Rmult_plus_distr_r.
   by rewrite -mf'E -meE.
-have Hr : is_left (Z_le_dec 0 sigma) = false by case: Z_le_dec=> //; lia.
+have Hr : is_left (ZArith_dec.Z_le_dec 0 sigma) = false 
+  by case: ZArith_dec.Z_le_dec=> //; lia.
 have mxE : mx = ma * md - mb * mc * pow (- sigma).
   rewrite /mx plus_IZR /mF /mE Hr minus_IZR !mult_IZR minus_IZR mult_IZR.
   rewrite -maE -mdE -mbE -mcE !IZR_Zpower //; last by lia.
@@ -506,7 +509,8 @@ Lemma me_le_y_le_mx (i :=(- sigma)%Z)
    Rabs me <= /2 * pow (p + i) /\ pow (p + i) * y <= Rabs mx.
 Proof.
 move=> Hc iL2.
-have Hr : is_left (Z_le_dec 0 sigma) = false by case: Z_le_dec=> //; lia.
+have Hr : is_left (ZArith_dec.Z_le_dec 0 sigma) = false.
+   by case: ZArith_dec.Z_le_dec=> //; lia.
 have me_le : Rabs me <= /2 * pow (p + i).
   rewrite /me /mE Hr mult_IZR IZR_Zpower -/i; try lia.
   rewrite bpow_plus Rabs_mult Rabs_pow -Rmult_assoc.
@@ -559,7 +563,8 @@ rewrite Rmult_1_l.
 apply/Rle_div_l; first by split_Rabs; lra.
 have [sigma_pos | [sigma_N1 | sigma_leN2]] :
    (0 <= sigma \/ (sigma = -1 \/ sigma <= -2))%Z by lia.
-- have Hl : is_left (Z_le_dec 0 sigma) by case: Z_le_dec=> //; lia.
+- have Hl : is_left (ZArith_dec.Z_le_dec 0 sigma).
+     by case: ZArith_dec.Z_le_dec=> //; lia.
   apply: Rle_trans (_ : Rabs mx <= _); last first.
     have := beta_ge_2.
     have : IZR beta <= pow p.
@@ -576,7 +581,8 @@ have [sigma_pos | [sigma_N1 | sigma_leN2]] :
   apply: Rle_trans (_ : Rabs mf - Rabs me <= _); last first.
     rewrite /mx /mX plus_IZR -/mf -/me; split_Rabs; lra.
   by have := F_bound Hc; lra.
-- have Hr : is_left (Z_le_dec 0 sigma) = false by case: Z_le_dec=> //; lia.
+- have Hr : is_left (ZArith_dec.Z_le_dec 0 sigma) = false.
+    by case: ZArith_dec.Z_le_dec=> //; lia.
   have [bcLp1|p2Lbc] := Rle_dec (Rabs (mb * mc)) (pow (2 * p - 1)).
     apply: Rle_trans (_ : Rabs mx <= _); last first.
       have := beta_ge_2.
@@ -642,7 +648,8 @@ have [sigma_pos | [sigma_N1 | sigma_leN2]] :
   by lra.
 pose i := (- sigma)%Z.
 have i_ge : (2 <= i)%Z by lia.
-have Hr : is_left (Z_le_dec 0 sigma) = false by case: Z_le_dec=> //; lia.
+have Hr : is_left (ZArith_dec.Z_le_dec 0 sigma) = false.
+  by case: ZArith_dec.Z_le_dec=> //; lia.
 have [me_le mx_ge1]:= me_le_y_le_mx Hc i_ge.
 rewrite -/i in mx_ge1; set y :=  _ + _ - _ in mx_ge1.
 have mx_ge2 : 2 * pow (p + i -1) <= Rabs mx.
@@ -897,7 +904,8 @@ have [F4 F5] : 1 <= ulp mx /\ Rabs mx < Rabs mf.
   by have := bpow_gt_0 beta (1 - p); nra.
 have [sigma_pos | [sigma_N1 | sigma_leN2]] :
    (0 <= sigma \/ (sigma = -1 \/ sigma <= -2))%Z by lia.
-- have Hl : is_left (Z_le_dec 0 sigma) by case: Z_le_dec=> //; lia.
+- have Hl : is_left (ZArith_dec.Z_le_dec 0 sigma).
+    by case: ZArith_dec.Z_le_dec=> //; lia.
   have me_le : Rabs me <= /2 * pow p.
     apply: Rle_trans (_ : /2 * ulp (mb * mc) <= _).
       have := error_bound_ulp_u (mb * mc).
@@ -950,7 +958,8 @@ have [sigma_pos | [sigma_N1 | sigma_leN2]] :
   rewrite /u !Rmult_assoc -bpow_plus -pow1E.
   have -> : (1 - p + p = 1)%Z by lia.
   by lra.
-- have Hr : is_left (Z_le_dec 0 sigma) = false by case: Z_le_dec=> //; lia.
+- have Hr : is_left (ZArith_dec.Z_le_dec 0 sigma) = false.
+    by case: ZArith_dec.Z_le_dec=> //; lia.
   have [bcLp1|p2Lbc] := Rle_dec (Rabs (mb * mc)) (pow (2 * p - 1)).
     have me_le : Rabs me <= /2 * pow p.
       have [xF1|xF1] :=  Req_dec (pow (2 * p - 1)) (Rabs (mb * mc)).
@@ -1119,7 +1128,8 @@ have [sigma_pos | [sigma_N1 | sigma_leN2]] :
   by rewrite -bpow_plus; congr bpow; lia.
 pose i := (- sigma)%Z.
 have i_ge : (2 <= i)%Z by lia.
-have Hr : is_left (Z_le_dec 0 sigma) = false by case: Z_le_dec=> //; lia.
+have Hr : is_left (ZArith_dec.Z_le_dec 0 sigma) = false.
+  by case: ZArith_dec.Z_le_dec=> //; lia.
 have [me_le mx_ge1]:= me_le_y_le_mx  Hc i_ge.
 rewrite -/i in mx_ge1 me_le; set y :=  _ + _ - _ in mx_ge1.
 have [iE2 | i_ge3] : (i = 2 \/ 3 <= i)%Z by lia.

@@ -1,6 +1,6 @@
 (* Copyright (c)  Inria. All rights reserved. *)
 
-Require Import Reals  Psatz.
+From Stdlib Require Import Reals  Psatz.
 From Flocq Require Import Core Relative Sterbenz Operations.
 From mathcomp Require Import all_ssreflect.
 From Coquelicot Require Import Coquelicot.
@@ -382,7 +382,7 @@ Qed.
 
 Lemma RN_IZR_ex z : exists z', RN (IZR z) = IZR z'.
 Proof.
-have [zLb|bLz] := Z_lt_le_dec (Z.abs z) (beta ^ p).
+have [zLb|bLz] := ZArith_dec.Z_lt_le_dec (Z.abs z) (beta ^ p).
   exists z.
   rewrite round_generic //.
   apply/generic_format_FLX/(FLX_spec _ _ _ (Float beta z 0)) => //.

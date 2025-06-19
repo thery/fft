@@ -1,5 +1,5 @@
 From mathcomp Require Import all_ssreflect.
-Require Import Reals  Psatz.
+From Stdlib Require Import Reals Psatz.
 From Flocq Require Import Core.Raux.
 
 Open Scope R_scope.

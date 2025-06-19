@@ -1,5 +1,5 @@
 (* Copyright (c)  Inria. All rights reserved. *)
-Require Import Reals  Psatz.
+From Stdlib Require Import Reals  Psatz.
 From mathcomp Require Import all_ssreflect all_algebra.
 From Flocq Require Import Core Relative Sterbenz Operations Mult_error.
 From Coquelicot Require Import Coquelicot.
@@ -928,7 +928,7 @@ let omega k := u + gk (m + n).-1 w fma k * (1 + u) in
 Proof.
 move=> omega; rewrite {}/omega.
 elim: m n w l1 l2 => // m IH n w l1 l2 Hs1 Hs2 Hi Hb Hw Hu /=.
-under eq_bigr => i _ do rewrite -[(m + n)%coq_nat]/((m .+1 + n).-1).
+under eq_bigr => i _ do rewrite -[(m + n)%nat]/((m .+1 + n).-1).
 rewrite addSnnS.
 apply: IH => //; last by rewrite -addSnnS.
 - by rewrite size_step_float addnS.

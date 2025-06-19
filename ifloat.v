@@ -1,6 +1,6 @@
 (* Copyright (c)  Inria. All rights reserved. *)
 
-Require Import Reals  Psatz.
+From Stdlib Require Import Reals  Psatz.
 From Flocq Require Import Core Relative Sterbenz Operations.
 From mathcomp Require Import all_ssreflect.
 From Coquelicot Require Import Coquelicot.
@@ -2840,7 +2840,7 @@ Let b := a + 1.
 Let c := a + 1.
 Let d := pow p -  IZR (Ztrunc ((IZR beta + 1)/2)). 
 
-Fact dEeven : Zeven beta -> d = pow p - (IZR beta)/2.
+Fact dEeven : Zeven.Zeven beta -> d = pow p - (IZR beta)/2.
 Proof.
 case/Zeven.Zeven_ex=> z betaE.
 have z1: (1 <= z)%Z by lia.
@@ -2854,9 +2854,9 @@ rewrite Ztrunc_floor; last first.
 by apply/Zfloor_imp; rewrite plus_IZR; lra.
 Qed.
 
-Fact dEodd : Zodd beta -> d = pow p - (IZR beta +1)/2.
+Fact dEodd : Zeven.Zodd beta -> d = pow p - (IZR beta +1)/2.
 Proof.
-case/Zodd_ex=> z betaE.
+case/Zeven.Zodd_ex=> z betaE.
 have z1: (1 <= z)%Z by lia.
 rewrite /d.
 congr (_ - _); rewrite betaE plus_IZR mult_IZR.

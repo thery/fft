@@ -1,6 +1,7 @@
-Require Import ZArith.
+From Stdlib Require Import ZArith.
 From mathcomp Require Import all_ssreflect all_algebra.
-Require Import String Rstruct Reals Cstruct Psatz Cmore.
+From Stdlib Require Import String Reals Psatz.
+Require Import Rstruct Cstruct Cmore.
 Require Import Coquelicot.Coquelicot.
 Require Import digitn mfft upoly.
 
