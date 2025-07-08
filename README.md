@@ -6,7 +6,7 @@ Follow the instructions on https://github.com/coq-community/templates to regener
 
 [![Docker CI][docker-action-shield]][docker-action-link]
 
-[docker-action-shield]: https://github.com/thery/fft/actions/workflows/docker-action.yml/badge.svg?branch=master
+[docker-action-shield]: https://github.com/thery/fft/actions/workflows/docker-action.yml/badge.svg?branch=main
 [docker-action-link]: https://github.com/thery/fft/actions/workflows/docker-action.yml
 
 
