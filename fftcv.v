@@ -1422,10 +1422,10 @@ Lemma lz_correct R l : lz2P R (some l) = int2Poly R [seq z2int i | i <- l].
 Proof. by rewrite /= lz2Paux_correct mulr1. Qed.
 
 Lemma pexpr2lZ_correct' R e l : 
-  pexpr2lZ e = Some l -> pexpr2poly R e = lz2Paux R 0 l.
+  pexpr2lZ e = some l -> pexpr2poly R e = lz2P R (some l).
 Proof.
 move /pexpr2lZ_correct => Hr.
-rewrite lz2Paux_correct mulr1.
+rewrite /= lz2Paux_correct mulr1.
 rewrite zPoly_int2Poly in Hr.
 apply: ptransferE Hr.
 by move=> m n; rewrite !natz => [] [].

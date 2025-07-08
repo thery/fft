@@ -28,7 +28,8 @@ match term with
              let p2 := getExpr Y in constr:(Pmult p1 p2)
 end.
 
-Ltac left_simpl := 
+Ltac poly_ring_simpl := 
+apply subr0_eq;
 let H := fresh "H" in 
 let vl := fresh "vl" in 
 (match goal with 
@@ -48,11 +49,19 @@ Parameter R : nzRingType.
 Axiom foo : forall P, P.
 
 Goal ('X^2 + 'X + 2) * ('X^2 - 32 * 'X)  = 0 :> {poly R}.
-left_simpl.
+poly_ring_simpl.
 apply: foo.
 Qed.
 
 Goal ('X^2 - 'X^13) * ('X^2 - 1) * 'X^15 = 0 :> {poly C}.
-left_simpl.
+poly_ring_simpl.
 apply: foo.
+Qed.
+
+Goal ('X - 1) * ('X + 1) = 'X^2 - 1 :> {poly R}.
+by poly_ring_simpl.
+Qed.
+
+Goal ('X - 1) * ('X + 1) = 'X^2 - 1 :> {poly C}.
+by poly_ring_simpl.
 Qed.

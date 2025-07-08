@@ -12,21 +12,21 @@ Follow the instructions on https://github.com/coq-community/templates to regener
 
 
 
-This repository contains Coq-proofs about the Fast Fourier Transform
+This repository contains Rocq-proofs about the Fast Fourier Transform
 
 ## Meta
 
 - Author(s):
   - Laurent Théry
 - License: [MIT License](LICENSE)
-- Compatible Coq versions: 9.0 or later
+- Compatible Rocq/Coq versions: 9.0 or later
 - Additional dependencies:
   - [Bignums](https://github.com/coq/bignums) same version as Coq
   - [MathComp ssreflect 2.4 or later](https://math-comp.github.io)
   - [Flocq 4.2.1 or later](https://gitlab.inria.fr/flocq/flocq.git)
   - [Interval 4.11.1 or later](https://gitlab.inria.fr/coqinterval/interval)
   - [Coquelicot 3.4.3 or later](https://gitlab.inria.fr/coquelicot/coquelicot)
-- Coq namespace: `fft`
+- Rocq/Coq namespace: `fft`
 - Related publication(s): none
 
 ## Building and installation instructions

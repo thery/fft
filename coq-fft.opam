@@ -10,9 +10,9 @@ dev-repo: "git+https://github.com/thery/fft.git"
 bug-reports: "https://github.com/thery/fft/issues"
 license: "MIT"
 
-synopsis: "Formalising FFT in Coq"
+synopsis: "Formalising FFT in Rocq"
 description: """
-This repository contains Coq-proofs about the Fast Fourier Transform"""
+This repository contains Rocq-proofs about the Fast Fourier Transform"""
 
 build: [make "-j%{jobs}%"]
 install: [make "install"]
