@@ -19,7 +19,6 @@ This repository contains Rocq-proofs about the Fast Fourier Transform
 - Author(s):
   - Laurent Théry
 - License: [MIT License](LICENSE)
-- Compatible Rocq/Coq versions: 9.1 or later
 - Additional dependencies:
   - [Bignums](https://github.com/coq/bignums) same version as Rocq
   - [MathComp ssreflect 2.5 or later](https://math-comp.github.io)

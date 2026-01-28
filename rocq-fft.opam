@@ -17,7 +17,7 @@ This repository contains Rocq-proofs about the Fast Fourier Transform"""
 build: [make "-j%{jobs}%"]
 install: [make "install"]
 depends: [
-  "coq" {(>= "9.1")}
+  "coq" 
   "coq-bignums" 
   "rocq-mathcomp-ssreflect" {(>= "2.5.0")}
   "coq-flocq" {(>= "4.2.1")}
