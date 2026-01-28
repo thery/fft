@@ -31,15 +31,7 @@ This repository contains Rocq-proofs about the Fast Fourier Transform
 
 ## Building and installation instructions
 
-The easiest way to install the latest released version of Fft
-is via [OPAM](https://opam.ocaml.org/doc/Install.html):
-
-```shell
-opam repo add rocq-released https://rocq-prover.org/opam/released
-opam install rocq-fft
-```
-
-To instead build and install manually, do:
+To build and install manually, do:
 
 ``` shell
 git clone https://github.com/thery/fft.git
