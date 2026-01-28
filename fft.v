@@ -1,6 +1,6 @@
 (* Copyright (c)  Inria. All rights reserved. *)
 From Stdlib Require Import Reals  Psatz.
-From mathcomp Require Import all_ssreflect all_algebra.
+From mathcomp Require Import all_boot all_algebra.
 From Flocq Require Import Core Relative Sterbenz Operations Mult_error.
 From Coquelicot Require Import Coquelicot.
 Require Import Nmore Rmore Cmore Fmore Rstruct Cstruct.
@@ -395,11 +395,11 @@ Qed.
 End Imult.
 
 Lemma error_fft_imult fma c1 c2 : 
-  2 ^ 5 * u <= 1 -> iformat c1 -> iformat c2 ->
+  (fma = false -> 2 ^ 5 * u <= 1) -> iformat c1 -> iformat c2 ->
   Cmod (fft_imult fma c1 c2 - c1 * c2) <= rho fma * Cmod (c1 * c2).
 Proof.
 move=> Hu Fc1 Fc2.
-case: fma => /=; first by apply: error_fma_A1_mult.
+case: fma Hu => /= [_ | /(_ (refl_equal false)) Hu ]; first by apply: error_fma_A1_mult.
 by apply: error_brent_imult.
 Qed.
 
@@ -533,7 +533,7 @@ Lemma delta_ge_0 z : 0 <= delta z.
 Proof. by apply: normw_error_ge_0. Qed.
 
 Lemma error_multw fma z w (w' := RNC w) (w'z := fft_imult fma w' z) : 
-  2 ^ 5 * u <= 1 -> iformat z -> Cmod w = 1 ->
+  (fma = false -> 2 ^ 5 * u <= 1) -> iformat z -> Cmod w = 1 ->
   Cmod ((w'z - w * z) / (w * z)) <= delta w + rho fma * (1 + delta w).
 Proof.
 move=> uE Fx wC1.
@@ -673,7 +673,7 @@ by have := delta_max_bound; have := rho_gt_0 fma; nra.
 Qed.
 
 Lemma error_multw_gk z i (w' := RNC (wk ^ i)) (zw' := fft_imult fma w' z) : 
-  2 ^ 5 * u <= 1 -> iformat z -> (i < 2 ^ k)%N ->
+  (fma = false -> 2 ^ 5 * u <= 1) -> iformat z -> (i < 2 ^ k)%N ->
   Cmod ((zw' - wk ^ i * z)) <= Cmod z * gk.
 Proof.
 move=> Hu Hi Hib; have := delta_max_correct Hib; rewrite /zw' /w' /gk /wk.
@@ -769,7 +769,7 @@ Qed.
 
 (* Lemma 2 *)
 Lemma error_stepp_stepm z0 z1 i (omegak := u + gk * (1 + u)) :
-  2 ^ 5 * u <= 1 -> iformat z1 -> (i < 2 ^ k)%N ->
+  (fma = false -> 2 ^ 5 * u <= 1) -> iformat z1 -> (i < 2 ^ k)%N ->
   (Cmod (fft_stepp z0 z1 i - (z0 + (wk ^ i) * z1))) ^ 2 +
   (Cmod (fft_stepm z0 z1 i - (z0 - (wk ^ i) * z1))) ^ 2  <= 
   ((Cmod  (z0 + (wk ^ i) * z1)) ^ 2 + (Cmod  (z0 - (wk ^ i) * z1)) ^ 2 ) * 
@@ -860,7 +860,7 @@ Qed.
 Lemma cnorm_step_floatDexact fma m n (w : C) (l : seq C) :
 (w ^ 2 ^ (m + n))%C = 1 ->
  let omega := u + gk (m + n) w fma n * (1 + u) in
- 2 ^ 5 * u <= 1 ->
+ (fma = false -> 2 ^ 5 * u <= 1) ->
  (forall i, (i < 2  ^ (m + n).+1)%N -> iformat (get l i)) ->
 cnorm (m + n).+1 
  (csub (m + n).+1 (step_float fma m n (w ^ (2 ^ m)) l) 
@@ -919,7 +919,7 @@ let omega k := u + gk (m + n).-1 w fma k * (1 + u) in
   cnorm (m + n) (csub (m + n) l1 l2) <= 
   cnorm (m + n) l2 * ((\prod_(i < n) (1 + omega i)%R)%RR - 1) ->
   (w ^ 2 ^ (m + n).-1)%C = 1 ->
-   2 ^ 5 * u <= 1 ->
+  (fma = false -> 2 ^ 5 * u <= 1) ->
   cnorm (m + n) 
     (csub (m + n) (fft_aux_float fma m n w l1) 
                   (fft_aux_exact m n w l2)) <= 
@@ -943,7 +943,7 @@ move : Hb.
 rewrite addnS.
 apply: Rle_trans (cnormB _ _ _ _) _; last first.
 apply: Rle_trans 
-   (Rplus_le_compat_r _ _ _ (cnorm_step_floatDexact _ _ _ _)) _ => //.
+   (Rplus_le_compat_r _ _ _ (cnorm_step_floatDexact _ _ _)) _ => //.
 have Cw : Cmod w = 1 by apply: (@w_norm1 ((m + n))).
 have Cwm : Cmod (w ^ 2 ^ m) = 1 by rewrite Cmod_pow Cw pow1.
 rewrite csub_step_exact !cnorm_step_exact_mult_2 //.
@@ -984,7 +984,7 @@ let omega k := u + gk n.-1 w fma k * (1 + u) in
   size l = (2 ^ n)%N -> 
   (forall i : nat, (i < 2 ^ n)%N -> iformat (get l i)) ->
   (w ^ 2 ^ n.-1)%C = 1 ->
-   2 ^ 5 * u <= 1 ->
+  (fma = false -> 2 ^ 5 * u <= 1) ->
   cnorm n 
     (csub n (fft_float fma n w l) (fft_exact n w l)) <= 
     cnorm n (fft_exact n w l) * 

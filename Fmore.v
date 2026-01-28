@@ -2,7 +2,7 @@
 
 From Stdlib Require Import Reals  Psatz.
 From Flocq Require Import Core Relative Sterbenz Operations.
-From mathcomp Require Import all_ssreflect.
+From mathcomp Require Import all_boot.
 From Coquelicot Require Import Coquelicot.
 Require Import Rmore Cmore.
 Set Implicit Arguments.

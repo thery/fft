@@ -1,4 +1,4 @@
-From mathcomp Require Import all_ssreflect all_algebra ssrnum.
+From mathcomp Require Import all_boot all_algebra ssrnum.
 Require Import digitn.
 
 (******************************************************************************)

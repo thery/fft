@@ -1,4 +1,4 @@
-From mathcomp Require Import all_ssreflect.
+From mathcomp Require Import all_boot.
 From Stdlib Require Import Reals Psatz.
 From Flocq Require Import Core.Raux.
 

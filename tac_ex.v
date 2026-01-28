@@ -1,5 +1,5 @@
 From Stdlib Require Import ZArith.
-From mathcomp Require Import all_ssreflect all_algebra.
+From mathcomp Require Import all_boot all_algebra.
 From Stdlib Require Import String Reals Psatz.
 Require Import Rstruct Cstruct Cmore.
 From Bignums Require Import BigZ.
@@ -45,6 +45,25 @@ rewrite [LHS]H; [clear H vl|vm_cast_no_check (refl_equal vl)];
 lazy delta [lz2P lz2Paux lzplus lzisZ  z2P Z.to_nat Pos.to_nat
     Pos.iter_op Init.Nat.add Z.opp size rev catrev predn] beta iota zeta.
 
+Implicit Type R : nzRingType. 
+
+Ltac poly_ring := by move=> *; poly_ring_simpl.
+
+Goal  forall R, ('X - 1) * ('X + 1) = 'X^2 - 1 :> {poly R}.
+Proof. by poly_ring. Qed.
+
+From Interval Require Import Tactic.
+
+Open Scope R_scope.
+
+Lemma pi_naive_approx : 355/113 - 1/10 ^ 6 < PI < 355/113.
+Proof. by interval. Qed.
+
+
+Goal  forall R, ('X - 1) * ('X + 1) = 'X^2 - 1 :> {poly R}.
+Proof. by poly_ring. Qed.
+
+
 Parameter R : nzRingType.
 Axiom foo : forall P, P.
 
@@ -58,10 +77,7 @@ poly_ring_simpl.
 apply: foo.
 Qed.
 
-Goal ('X - 1) * ('X + 1) = 'X^2 - 1 :> {poly R}.
-by poly_ring_simpl.
+Goal  forall R, ('X - 1) * ('X + 1) = 'X^2 - 1 :> {poly R}.
+poly_ring.
 Qed.
 
-Goal ('X - 1) * ('X + 1) = 'X^2 - 1 :> {poly C}.
-by poly_ring_simpl.
-Qed.

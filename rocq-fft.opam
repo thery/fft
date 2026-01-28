@@ -17,17 +17,17 @@ This repository contains Rocq-proofs about the Fast Fourier Transform"""
 build: [make "-j%{jobs}%"]
 install: [make "install"]
 depends: [
-  "coq" {(>= "9.0")}
+  "coq" {(>= "9.1")}
   "coq-bignums" 
-  "coq-mathcomp-ssreflect" {(>= "2.4.0")}
+  "rocq-mathcomp-ssreflect" {(>= "2.5.0")}
   "coq-flocq" {(>= "4.2.1")}
-  "coq-interval" {(>= "4.11.1")}
+  "coq-interval" {(>= "4.11.3)}
   "coq-coquelicot" {(>= "3.4.3")}
 ]
 
 tags: [
   "keyword:fft"
-  "keyword:FFT polynomials Coq"
+  "keyword:FFT polynomials Rocq"
   "logpath:fft"
 ]
 authors: [

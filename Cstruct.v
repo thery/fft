@@ -1,7 +1,7 @@
 (* Copyright (c)  Inria. All rights reserved. *)
 From HB Require Import structures.
 From Stdlib Require Import Reals  Psatz.
-From mathcomp Require Import all_ssreflect all_algebra.
+From mathcomp Require Import all_boot all_algebra.
 Import Order.TTheory GRing.Theory Num.Def Num.Theory.
 From Flocq Require Import Core Relative Sterbenz Operations Mult_error.
 From Coquelicot Require Import Coquelicot Complex.

@@ -6,7 +6,7 @@ Follow the instructions on https://github.com/coq-community/templates to regener
 
 [![Docker CI][docker-action-shield]][docker-action-link]
 
-[docker-action-shield]: https://github.com/thery/fft/actions/workflows/docker-action.yml/badge.svg?branch=main
+[docker-action-shield]: https://github.com/thery/fft/actions/workflows/docker-action.yml/badge.svg?branch=master
 [docker-action-link]: https://github.com/thery/fft/actions/workflows/docker-action.yml
 
 
@@ -19,19 +19,27 @@ This repository contains Rocq-proofs about the Fast Fourier Transform
 - Author(s):
   - Laurent Théry
 - License: [MIT License](LICENSE)
-- Compatible Rocq/Coq versions: 9.0 or later
+- Compatible Rocq/Coq versions: 9.1 or later
 - Additional dependencies:
-  - [Bignums](https://github.com/coq/bignums) same version as Coq
-  - [MathComp ssreflect 2.4 or later](https://math-comp.github.io)
+  - [Bignums](https://github.com/coq/bignums) same version as Rocq
+  - [MathComp ssreflect 2.5 or later](https://math-comp.github.io)
   - [Flocq 4.2.1 or later](https://gitlab.inria.fr/flocq/flocq.git)
-  - [Interval 4.11.1 or later](https://gitlab.inria.fr/coqinterval/interval)
+  - [Interval 4.11.3 or later](https://gitlab.inria.fr/coqinterval/interval)
   - [Coquelicot 3.4.3 or later](https://gitlab.inria.fr/coquelicot/coquelicot)
 - Rocq/Coq namespace: `fft`
 - Related publication(s): none
 
 ## Building and installation instructions
 
-To build and install manually, do:
+The easiest way to install the latest released version of Fft
+is via [OPAM](https://opam.ocaml.org/doc/Install.html):
+
+```shell
+opam repo add rocq-released https://rocq-prover.org/opam/released
+opam install rocq-fft
+```
+
+To instead build and install manually, do:
 
 ``` shell
 git clone https://github.com/thery/fft.git
