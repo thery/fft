@@ -1,4 +1,4 @@
-From mathcomp Require Import all_boot.
+From mathcomp Require Import boot.
 From Stdlib Require Import Reals  Psatz.
 From Coquelicot Require Import Coquelicot.
 Require Import Rmore.

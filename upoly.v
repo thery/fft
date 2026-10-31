@@ -1,4 +1,4 @@
-From mathcomp Require Import all_boot all_algebra.
+From mathcomp Require Import boot algebra.
 
 Set Implicit Arguments.
 Unset Strict Implicit.
@@ -202,7 +202,8 @@ Lemma Rt_char z1 z2 : z1%:~R = z2%:~R :> R -> z1 = z2.
 Proof.
 wlog Hz : z1 z2 / (z1 <= z2) => [Hz|Hz1].
   case: (Num.Theory.lerP z1 z2); first by apply: Hz.
-  by move=> Hz1 Hz2; apply/sym_equal/Hz; first by apply: Order.POrderTheory.ltW.
+  move=> Hz1 Hz2; apply/sym_equal/Hz => //.
+  by apply: order.Order.POrderTheory.ltW.
 suff Hz2 : z2 - z1 = 0 by rewrite -(subrK z1 z2) Hz2 add0r.
 have : 0 <= z2 - z1 by rewrite Num.Theory.subr_ge0.
 have : (z2 - z1)%:~R = 0 :> R by rewrite rmorphB /= Hz1 subrr.

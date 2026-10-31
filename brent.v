@@ -2,7 +2,7 @@
 
 From Stdlib Require Import Reals  Psatz.
 From Flocq Require Import Core Relative Sterbenz Operations Mult_error.
-From mathcomp Require Import all_boot.
+From mathcomp Require Import boot.
 From Coquelicot Require Import Coquelicot.
 Require Import kahan_mult.
 Require Import Rmore Cmore Fmore.
@@ -17,7 +17,7 @@ Variables  p: Z.
 Variable beta : radix.
 Hypothesis beta_le : (2 <= beta)%Z.
 Hypothesis Hp2: Z.lt 1 p.
-Local Notation pow e := (bpow beta e).
+Local Abbreviation pow e := (bpow beta e).
 
 Local Instance p_gt_0 : Prec_gt_0 p.
 now apply Z.lt_trans with (2 := Hp2).
@@ -25,22 +25,22 @@ Qed.
 
 Open Scope R_scope.
 
-Notation u := (u p beta).
-Notation u_gt_0 := (u_gt_0 p beta).
+Abbreviation u := (u p beta).
+Abbreviation u_gt_0 := (u_gt_0 p beta).
 
 Hypothesis u_le : 2 ^ 5 * u <= 1.
 
 Variable choice : Z -> bool.
 Hypothesis choice_sym: forall x, choice x  = negb (choice (- (x + 1))).
 
-Local Notation fexp := (FLX_exp p).
-Local Notation format := (generic_format beta fexp).
-Local Notation iformat := (generic_formatC beta fexp).
-Local Notation cexp := (cexp beta fexp).
-Local Notation mant := (scaled_mantissa beta fexp).
-Local Notation RN := (round beta fexp (Znearest choice)).
-Local Notation RNC := (roundC beta fexp (Znearest choice)).
-Local Notation ulp := (ulp beta fexp).
+Local Abbreviation fexp := (FLX_exp p).
+Local Abbreviation format := (generic_format beta fexp).
+Local Abbreviation iformat := (generic_formatC beta fexp).
+Local Abbreviation cexp := (cexp beta fexp).
+Local Abbreviation mant := (scaled_mantissa beta fexp).
+Local Abbreviation RN := (round beta fexp (Znearest choice)).
+Local Abbreviation RNC := (roundC beta fexp (Znearest choice)).
+Local Abbreviation ulp := (ulp beta fexp).
 
 Definition normw_error2 (f ff: C -> C -> C) (z1 z2 : C) : R := 
  Cmod (((ff z1 z2) - f z1 z2) / (f z1 z2))%C.
@@ -150,7 +150,7 @@ apply: Rle_trans (_ : IZR beta * pow (cexp x) <= _).
 by rewrite -bpow_1 -bpow_plus; apply: bpow_le; lia.
 Qed.
 
-Notation relative_error_le := (relative_error_le beta Hp2 choice).
+Abbreviation relative_error_le := (relative_error_le beta Hp2 choice).
 
 Lemma normw_errror2_brent_imult_pos x1 x2 y1 y2 :
   0 <= x1 -> 0 <= y1 -> 0 <= x2 -> 0 <= y2 -> y1 * y2 <= x1 * x2 ->
@@ -210,9 +210,9 @@ have F1 : Rabs (RN gx - gx) <= u * fx.
   by rewrite /u Rabs_right; lra.
 have F2 : Rabs v.2 <= 2 * u * fx.
   have F2 := relative_error_le (x1 * y2).
-  rewrite [X in _ <= _ * X]Rabs_right in F2; last by nra.
+  rewrite [X in _ <= _ * X]Rabs_right in F2; first by nra.
   have F3 := relative_error_le (y1 * x2).
-  rewrite [X in _ <= _ * X]Rabs_right in F3; last by nra.
+  rewrite [X in _ <= _ * X]Rabs_right in F3; first by nra.
   by rewrite /fx in F1 *; lra.
 have F3 : ulp (y1 * y2) <= ulp (x1 * x2) by apply: ulp_le_pos; nra.
 have [CR1|CR1] := Rle_lt_dec (ulp (x1 * x2)) (ulp (RN(x1 * x2) - RN(y1 * y2))).
@@ -221,9 +221,9 @@ have [CR1|CR1] := Rle_lt_dec (ulp (x1 * x2)) (ulp (RN(x1 * x2) - RN(y1 * y2))).
   have F4 : RN (x1 * x2) - RN (y1 * y2) <= fy + u * fz.
     rewrite /fx /fy /fz.
     have F5 := relative_error_le (x1 * x2).
-    rewrite [in X in _ <= X]Rabs_right in F5; last by nra.
+    rewrite [in X in _ <= X]Rabs_right in F5; first by nra.
     have F6 := relative_error_le (y1 * y2).
-    rewrite [in X in _ <= X]Rabs_right in F6; last by nra.
+    rewrite [in X in _ <= X]Rabs_right in F6; first by nra.
     have := u_gt_0.
     by rewrite /fx {F1 F2 Hv}//; split_Rabs; nra.
   have F5 : RN (y1 * y2) <= RN (x1 * x2) by apply: round_le; lra.
@@ -248,8 +248,8 @@ have [CR1|CR1] := Rle_lt_dec (ulp (x1 * x2)) (ulp (RN(x1 * x2) - RN(y1 * y2))).
       u * (y1 * y2) + 2 * u * (RN (x1 * x2) - RN (y1 * y2)) <= _).
       have := ulp_2u beta Hp2 (y1 * y2).
       have := ulp_2u beta Hp2 (RN (x1 * x2) - RN (y1 * y2)).
-      rewrite Rabs_right; last by lra.
-      rewrite Rabs_right; last by nra.
+      rewrite Rabs_right; first by lra.
+      rewrite Rabs_right; first by nra.
       by split_Rabs; lra.
     rewrite /fz /fy in F4.
     by nra.
@@ -272,8 +272,8 @@ have [CR1|CR1] := Rle_lt_dec (ulp (x1 * x2)) (ulp (RN(x1 * x2) - RN(y1 * y2))).
       by rewrite [X in _ <= X]Rabs_right //; lra.
     apply: Rle_trans (sqrt_triangle_sum3 _ _ _ zz_pos) _.
     apply: Rplus_le_compat; last by rewrite -/zz; lra.
-    rewrite -[u]sqrt_square; last by lra.
-    rewrite -sqrt_mult; [|nra|nra].
+    rewrite -[u]sqrt_square; first by lra.
+    rewrite -sqrt_mult; [nra|nra|].
     apply: sqrt_le_1_alt.
     by rewrite /xx /yy -/fx; lra.
   apply: Rle_lt_trans (_ : 
@@ -406,7 +406,7 @@ have [Heq | Hneq] := Req_dec (x1 * y2 - y1 * x2) 0.
     u * sqrt ((x1 * x2 + y1 * y2) * (x1 * x2 + y1 * y2) + 
              4 * fx * fx) <= _).
     rewrite -[u]sqrt_square; try lra.
-    rewrite -sqrt_mult; [|nra|set V := (x1 * _ + _); nra].
+    rewrite -sqrt_mult; [nra|set V := (x1 * _ + _); nra|].
     rewrite Rmult_plus_distr_l.
     apply/sqrt_lt_1_alt; split; first by nra.
     apply: Rplus_lt_le_compat; rewrite pow2_mult.
@@ -440,7 +440,7 @@ apply: Rle_lt_trans (_ :
     u * sqrt ((x1 * x2 + y1 * y2) * (x1 * x2 + y1 * y2) + 
              4 * fx * fx) < _).
   rewrite -[u]sqrt_square; try lra.
-  rewrite -sqrt_mult; [|nra|set V := (x1 * _ + _); nra].
+  rewrite -sqrt_mult; [nra|set V := (x1 * _ + _); nra|].
   rewrite Rmult_plus_distr_l.
   apply/sqrt_le_1_alt/Rplus_le_compat; rewrite pow2_mult.
     rewrite -(Rabs_sqr v.1).
@@ -502,7 +502,7 @@ wlog x2_pos : x1 y1 x2 y2 x1_pos y1_pos / 0 <= x2 => [Hx2|].
   rewrite -Ropp_plus_distr -[- _ - - _]Ropp_plus_distr  !RN_sym //.
   set u1 := RN _; set u2 := RN _.
   rewrite /Cminus.
-  have -> : (((- u1)%R, (- u2)%R) = - (u1, u2))%C by [].
+  have -> : ((Ropp u1, Ropp u2) = - (u1, u2) :> C)%C by [].
   by rewrite -Copp_plus_distr -Copp_mult_distr_r Cmod_opp.
 wlog y2_pos : x1 y1 x2 y2 x1_pos y1_pos x2_pos / 0 <= y2 => [Hy2|].
   case: (Rle_dec 0 y2) => [// | y2_neg]; first by apply: Hy2.
@@ -515,7 +515,7 @@ wlog y2_pos : x1 y1 x2 y2 x1_pos y1_pos x2_pos / 0 <= y2 => [Hy2|].
   rewrite !Rsimp01.
   rewrite -!Ropp_mult_distr_r !RN_sym // -Ropp_plus_minus_distr RN_sym //.
   set u1 := RN _; set u2 := RN _.
-  have->: (((- u2)%R, u1) = (u1, u2) * Ci :> C)%C by congr (_, _) => /=; lra.
+  have->: ((Ropp u2, u1) = (u1, u2) * Ci :> C)%C by congr (_, _) => /=; lra.
   have->: ((x1, y1) * (Ci * (x2, y2)) = ((x1, y1) * (x2, y2)) * Ci)%C by ring.
   by rewrite -Cmult_minus_distr_r Cmod_mult Cmod_Ci Rmult_1_r.
 wlog prod_pos :

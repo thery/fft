@@ -3,7 +3,7 @@
 From Stdlib Require Import Reals  Psatz.
 From Flocq Require Import Core Relative Sterbenz Operations.
 From Flocq Require Import Mult_error.
-From mathcomp Require Import all_boot.
+From mathcomp Require Import boot.
 From Coquelicot Require Import Coquelicot.
 Require Import Rmore Fmore.
 
@@ -25,21 +25,21 @@ Local Instance p_gt_0 : Prec_gt_0 p.
 now apply Z.lt_trans with (2 := Hp2).
 Qed.
 
-Local Notation fexp := (FLX_exp p).
-Local Notation format := (generic_format beta fexp).
-Local Notation cexp := (cexp beta fexp).
-Local Notation mant := (scaled_mantissa beta fexp).
-Local Notation RN := (round beta fexp (Znearest choice)).
-Local Notation ulp := (ulp beta fexp).
-Local Notation u := (u p beta).
-Local Notation pow := (bpow beta).
+Local Abbreviation fexp := (FLX_exp p).
+Local Abbreviation format := (generic_format beta fexp).
+Local Abbreviation cexp := (cexp beta fexp).
+Local Abbreviation mant := (scaled_mantissa beta fexp).
+Local Abbreviation RN := (round beta fexp (Znearest choice)).
+Local Abbreviation ulp := (ulp beta fexp).
+Local Abbreviation u := (u p beta).
+Local Abbreviation pow := (bpow beta).
 
-Local Notation u_gt_0 := (u_gt_0 p beta).
-Local Notation RN_pow := (@RN_pow  _ beta Hp2 choice).
-Local Notation RN_abs := (@RN_abs _ beta Hp2 choice choice_sym).
-Local Notation FLX_format_Rabs_Fnum := (@FLX_format_Rabs_Fnum p beta Hp2).
-Local Notation beta_ge_2 := (beta_ge_2 beta Hbeta2).
-Local Notation ulp_FLX_gt :=  (@ulp_FLX_gt p beta).
+Local Abbreviation u_gt_0 := (u_gt_0 p beta).
+Local Abbreviation RN_pow := (@RN_pow  _ beta Hp2 choice).
+Local Abbreviation RN_abs := (@RN_abs _ beta Hp2 choice choice_sym).
+Local Abbreviation FLX_format_Rabs_Fnum := (@FLX_format_Rabs_Fnum p beta Hp2).
+Local Abbreviation beta_ge_2 := (beta_ge_2 beta Hbeta2).
+Local Abbreviation ulp_FLX_gt :=  (@ulp_FLX_gt p beta).
 
 Definition kahan a b c d := 
   let w := RN (b * c) in
@@ -198,7 +198,7 @@ by case: Ff; rewrite fE; apply/generic_format_opp/Fe.
 Qed.
 
 Let ma := mant a.
-Local Notation mA := (Ztrunc (mant a)).
+Local Abbreviation mA := (Ztrunc (mant a)).
 
 Lemma maE : ma = IZR mA.
 Proof. by rewrite -scaled_mantissa_generic. Qed.
@@ -207,7 +207,7 @@ Lemma aE : a = ma * pow (cexp a).
 Proof. by rewrite maE [LHS]Fa. Qed.
 
 Let mb := mant b.
-Local Notation  mB := (Ztrunc (mant b)).
+Local Abbreviation  mB := (Ztrunc (mant b)).
 
 Lemma mbE : mb = IZR mB.
 Proof. by rewrite -scaled_mantissa_generic. Qed.
@@ -216,7 +216,7 @@ Lemma bE : b = mb * pow (cexp b).
 Proof. by rewrite mbE [LHS]Fb. Qed.
 
 Let mc := mant c.
-Local Notation mC := (Ztrunc (mant c)).
+Local Abbreviation mC := (Ztrunc (mant c)).
 
 Lemma mcE : mc = IZR mC.
 Proof. by rewrite -scaled_mantissa_generic. Qed.
@@ -225,7 +225,7 @@ Lemma cE : c = mc * pow (cexp c).
 Proof. by rewrite mcE [LHS]Fc. Qed.
 
 Let md := mant d.
-Local Notation mD :=( Ztrunc (mant d)).
+Local Abbreviation mD :=( Ztrunc (mant d)).
 
 Lemma mdE : md = IZR mD.
 Proof. by rewrite -scaled_mantissa_generic. Qed.
@@ -299,7 +299,7 @@ have Hr : is_left (ZArith_dec.Z_le_dec 0 sigma) = false
   by case: ZArith_dec.Z_le_dec=> //; lia.
 have mxE : mx = ma * md - mb * mc * pow (- sigma).
   rewrite /mx plus_IZR /mF /mE Hr minus_IZR !mult_IZR minus_IZR mult_IZR.
-  rewrite -maE -mdE -mbE -mcE !IZR_Zpower //; last by lia.
+  rewrite -maE -mdE -mbE -mcE !IZR_Zpower //; first by lia.
   by lra.
 have muE : mu = (cexp a + cexp d)%Z.
   by rewrite /mu /sigma in sigma_neg *; lia.
@@ -432,7 +432,7 @@ Lemma mb_ge : C -> pow (p - 1) + 1 <= Rabs mb.
 Proof.
 move=> Hc.
 suff :  pow (p - 1) < Rabs mb.
-  rewrite mbE Rabs_Zabs -IZR_Zpower -?(plus_IZR _ 1); last by lia.
+  rewrite mbE Rabs_Zabs -IZR_Zpower -?(plus_IZR _ 1); first by lia.
   by move=> /lt_IZR H; apply: IZR_le; lia.
 have b_neq_0 : b <> 0 by have := C_imp_abcd_neq_0 Hc; nra.
 have c_neq_0 : c <> 0 by have := C_imp_abcd_neq_0 Hc; nra.
@@ -457,7 +457,7 @@ Lemma mb_ge_powp1 : C -> pow (p - 1) + 1 <= Rabs mb.
 Proof.
 move=> Hc.
 suff :  pow (p - 1) < Rabs mb.
-  rewrite mbE Rabs_Zabs -IZR_Zpower -?(plus_IZR _ 1); last by lia.
+  rewrite mbE Rabs_Zabs -IZR_Zpower -?(plus_IZR _ 1); first by lia.
   by move=> /lt_IZR H; apply: IZR_le; lia.
 have b_neq_0 : b <> 0 by have := C_imp_abcd_neq_0 Hc; nra.
 have c_neq_0 : c <> 0 by have := C_imp_abcd_neq_0 Hc; nra.
@@ -482,7 +482,7 @@ Lemma mc_ge_powp1 : C -> pow (p - 1) + 1 <= Rabs mc.
 Proof.
 move=> Hc.
 suff :  pow (p - 1) < Rabs mc.
-  rewrite mcE Rabs_Zabs -IZR_Zpower -?(plus_IZR _ 1); last by lia.
+  rewrite mcE Rabs_Zabs -IZR_Zpower -?(plus_IZR _ 1); first by lia.
   by move=> /lt_IZR H; apply: IZR_le; lia.
 have b_neq_0 : b <> 0 by have := C_imp_abcd_neq_0 Hc; nra.
 have c_neq_0 : c <> 0 by have := C_imp_abcd_neq_0 Hc; nra.
@@ -524,7 +524,7 @@ split => //.
 have mx_ge : (pow (p - 1) + 1) ^ 2 * pow i - (pow p - 1) ^ 2 <=  Rabs mx.
   have -> : mx = ma * md - (mb * mc) * pow i.
     rewrite /mx plus_IZR /mF /mE Hr minus_IZR !mult_IZR minus_IZR mult_IZR.
-    rewrite -maE -mdE -mbE -mcE -/i !IZR_Zpower //; last by lia.
+    rewrite -maE -mdE -mbE -mcE -/i !IZR_Zpower //; first by lia.
     by lra.
   apply: Rle_trans (_ : Rabs (mb * mc * pow i) - Rabs (ma * md) <= _);
       last by split_Rabs; lra.
@@ -539,7 +539,7 @@ rewrite Rmult_minus_distr_l.
 set vu := _ - _ in mx_ge; set vv := _ - _.
 suff : vv <= vu by lra.
 have : vu - vv = pow i - 1.
-  rewrite /vu /vv 3!bpow_plus (_ : -(2) = 2 * -1)%Z; last by lia.
+  rewrite /vu /vv 3!bpow_plus (_ : -(2) = 2 * -1)%Z; first by lia.
   rewrite pow2M bpow_opp bpow_opp.
   by field; split; apply: pow_neq_0.
 suff : 1 <= pow i by lra.
@@ -557,7 +557,7 @@ rewrite mxE !Rabs_mult [in X in _ / X]Rmult_comm.
 rewrite /Rdiv Rinv_mult.
 (* - by have := bpow_gt_0 beta mu; split_Rabs; lra. *)
 (* - by split_Rabs; lra. *)
-rewrite Rmult_assoc -[Rabs (pow mu) * _]Rmult_assoc Rinv_r; last first.
+rewrite Rmult_assoc -[Rabs (pow mu) * _]Rmult_assoc Rinv_r.
   by have := bpow_gt_0 beta mu; split_Rabs; lra.
 rewrite Rmult_1_l.
 apply/Rle_div_l; first by split_Rabs; lra.
@@ -592,7 +592,7 @@ have [sigma_pos | [sigma_N1 | sigma_leN2]] :
       by split_Rabs; nra.
     have F : Rabs me <= /2 * pow p.
       have [F1|F1] :=  Req_dec (pow (2 * p - 1)) (Rabs (mb * mc)).
-        rewrite /me /mE Hr /mW' mult_IZR minus_IZR -iRNE round_generic.
+        rewrite /me /mE Hr /mW' mult_IZR minus_IZR -iRNE round_generic; last first.
           by have := bpow_gt_0 beta p; split_Rabs; lra.
         rewrite mult_IZR -mbE -mcE.
         split_Rabs; last first.
@@ -740,7 +740,7 @@ Proof.
 have [Hc | [Hc | Hc]] := C_case; last 2 first.
 - have -> : eps2 = 0. 
     rewrite /eps2 /x' /f' /f /e /w' [RN (b * c)]round_generic //.
-    rewrite Rminus_eq_0 Rplus_0_r round_generic; first by lra.
+    rewrite Rminus_eq_0 Rplus_0_r round_generic; last by lra.
     by apply: generic_format_round.
   by have := ulp_ge_0 beta fexp x; have := beta_ge_2; split_Rabs; nra.
 - have -> : eps2 = RN x - x by rewrite /eps2 /x' /f' [RN f]round_generic // -xE.
@@ -752,7 +752,7 @@ rewrite Rmult_assoc; apply: Rmult_le_compat_l; first by lra.
 suff : ulp (f' + e) < pow 2 * ulp x.
   have [->|fe_eq_0] := Req_dec (f' + e) 0.
     by rewrite ulp_FLX_0; have := beta_ge_2; have := ulp_ge_0 beta fexp x; nra.
-  rewrite !ulp_neq_0 //; last by apply: C_imp_x_neq_0.
+  rewrite !ulp_neq_0 //; first by apply: C_imp_x_neq_0.
   rewrite -pow1E -!bpow_plus.
   by move=> /lt_bpow H; apply: bpow_le; lia.
 have -> : f' + e = x + eps1 by rewrite /eps1 xE; lra.
@@ -767,7 +767,7 @@ apply: Rle_lt_trans (_ :
     (IZR beta + / 2 * IZR beta * (IZR beta * pow (- p))) * ulp x < _ ).
   by have := @ulp_FLX_ge beta p p_gt_0 x; have := beta_ge_2; nra.
 apply: Rmult_lt_compat_r.
-  by rewrite ulp_neq_0; [apply: bpow_gt_0 | apply: C_imp_x_neq_0].
+  by rewrite ulp_neq_0; [apply: C_imp_x_neq_0|apply: bpow_gt_0].
 rewrite -pow1E !Rmult_assoc -!bpow_plus.
 have : pow(1 + (1 + - p)) <= 1. by suff -> : 1 = pow 0 by apply: bpow_le; lia.
 have : pow 2 = (IZR beta) ^ 2 by rewrite -pow1E -pow2M; congr (pow _); lia.
@@ -851,7 +851,7 @@ have F2 : eta <= /2 * (pow p - pow (p - 1)) -> Rabs (x' - x) <= 2 * u * Rabs x.
     have [mu [-> _ _ mxE _]] := mu_def.
     rewrite mxE Rabs_mult Rabs_pow ulp_FLX_exact_shift /eta.
     suff ulp_mu_gt_0 : 0 < ulp mx by field; lra.
-    rewrite ulp_neq_0; last by lra.
+    rewrite ulp_neq_0; first by lra.
     by apply: bpow_gt_0.
   pose K' := /2 * /(pow p - eta) * (IZR beta + 1).
   have F4 : eta < pow p -> Rabs (x' - x) <= K' * Rabs x.
@@ -963,7 +963,7 @@ have [sigma_pos | [sigma_N1 | sigma_leN2]] :
   have [bcLp1|p2Lbc] := Rle_dec (Rabs (mb * mc)) (pow (2 * p - 1)).
     have me_le : Rabs me <= /2 * pow p.
       have [xF1|xF1] :=  Req_dec (pow (2 * p - 1)) (Rabs (mb * mc)).
-        rewrite /me /mE Hr /mW' mult_IZR minus_IZR -iRNE round_generic.
+        rewrite /me /mE Hr /mW' mult_IZR minus_IZR -iRNE round_generic; last first.
           by have := bpow_gt_0 beta p; split_Rabs; lra.
         rewrite mult_IZR -mbE -mcE.
         move: xF1; rewrite /Rabs; split_case_Rabs => xF1; last first.
@@ -1069,7 +1069,7 @@ have [sigma_pos | [sigma_N1 | sigma_leN2]] :
       by ring[H1].
     have [mbc_gt0|mbc_le0] : 0 < mb * mc \/ mb * mc < 0 by lra.
       have me_lt0 : me < 0.
-        rewrite /me /mE Hr sigma_N1 mult_IZR IZR_Zpower; last by lia.
+        rewrite /me /mE Hr sigma_N1 mult_IZR IZR_Zpower; first by lia.
         rewrite minus_IZR -iRNE mult_IZR -mbE  -mcE.
         have -> : (- (-1) = 1)%Z by lia.
         suff : RN (mb * mc) < mb * mc by have := bpow_gt_0 beta 1; nra.
@@ -1077,12 +1077,12 @@ have [sigma_pos | [sigma_N1 | sigma_leN2]] :
       have : 0 < mf.
         by move: F5; rewrite /mx /mX plus_IZR -/mf -/me; split_Rabs; lra.
       rewrite /mf /mF /mW' Hr sigma_N1 minus_IZR !mult_IZR -iRNE mult_IZR.
-      rewrite -maE  -mdE -mbE -mcE -[mb * mc]Rabs_pos_eq; last by lra.
+      rewrite -maE  -mdE -mbE -mcE -[mb * mc]Rabs_pos_eq; first by lra.
       rewrite RN_eq Rmult_1_r -pow1E -bpow_plus.
       have -> : (2 * p - 1 + 1 = 2 * p)%Z by lia.
       by have := bpow_gt_0 beta (2 * p); split_Rabs; lra.
     have me_gt0 : 0 < me.
-      rewrite /me /mE Hr sigma_N1 mult_IZR IZR_Zpower; last by lia.
+      rewrite /me /mE Hr sigma_N1 mult_IZR IZR_Zpower; first by lia.
       rewrite minus_IZR -iRNE mult_IZR -mbE  -mcE.
       have -> : (- (-1) = 1)%Z by lia.
       suff : - RN (mb * mc) < - (mb * mc) by have := bpow_gt_0 beta 1; nra.
@@ -1091,7 +1091,7 @@ have [sigma_pos | [sigma_N1 | sigma_leN2]] :
       by move: F5; rewrite /mx /mX plus_IZR -/mf -/me; split_Rabs; lra.
     rewrite /mf /mF /mW' Hr sigma_N1 minus_IZR !mult_IZR -iRNE mult_IZR.
     rewrite -maE  -mdE -mbE -mcE /Rminus Ropp_mult_distr_l -RN_sym //.
-    rewrite -Rabs_left; last by lra.
+    rewrite -Rabs_left; first by lra.
     rewrite RN_eq Rmult_1_r -pow1E -bpow_plus.
     have -> : (2 * p - 1 + 1 = 2 * p)%Z by lia.
     by have := bpow_gt_0 beta (2 * p); split_Rabs; lra.
@@ -1142,7 +1142,7 @@ have [iE2 | i_ge3] : (i = 2 \/ 3 <= i)%Z by lia.
         by rewrite -bpow_plus; congr (pow _); lia.
       by lra.
     rewrite /mx /mX /mF /mE Hr -/i iE2 plus_IZR minus_IZR 3!mult_IZR.
-    rewrite minus_IZR mult_IZR -maE -mdE -mbE -mcE IZR_Zpower; last by lia.
+    rewrite minus_IZR mult_IZR -maE -mdE -mbE -mcE IZR_Zpower; first by lia.
     apply: Rlt_le_trans (_ : pow 2 * Rabs (mb * mc) - Rabs (ma * md) <= _);
         last first.
       by rewrite /Rabs; split_case_Rabs; lra.
@@ -1172,7 +1172,7 @@ have [iE2 | i_ge3] : (i = 2 \/ 3 <= i)%Z by lia.
   have [bcLp1|p2Lbc] := Rle_dec (Rabs (mb * mc)) (pow (2 * p - 1)).
     have me_le1 : Rabs me <= /2 * pow (p + 1).
       have [xF1|xF1] :=  Req_dec (pow (2 * p - 1)) (Rabs (mb * mc)).
-        rewrite /me /mE Hr /mW' mult_IZR minus_IZR -iRNE round_generic.
+        rewrite /me /mE Hr /mW' mult_IZR minus_IZR -iRNE round_generic; last first.
           by have := bpow_gt_0 beta (p + 1); split_Rabs; lra.
         rewrite mult_IZR -mbE -mcE.
         move: xF1; rewrite /Rabs; split_case_Rabs => xF1; last first.
@@ -1188,7 +1188,7 @@ have [iE2 | i_ge3] : (i = 2 \/ 3 <= i)%Z by lia.
       by  have := error_bound_ulp_u (mb * mc); lra.
     apply: F2.
     apply/Rle_div_l.
-      rewrite ulp_neq_0; last by lra.
+      rewrite ulp_neq_0; first by lra.
       by apply: bpow_gt_0; lra.
     apply: Rle_trans me_le1 _.
     have pD1_ge := bpow_gt_0 beta (p + 1).
@@ -1208,7 +1208,7 @@ have [iE2 | i_ge3] : (i = 2 \/ 3 <= i)%Z by lia.
           last first.
       suff -> : mx = ma * md - mb * mc * pow 2 by split_Rabs; lra.
       rewrite /mx /mX /mF /mE Hr plus_IZR minus_IZR !mult_IZR minus_IZR.
-      rewrite mult_IZR -maE -mdE -mbE -mcE -/i iE2 IZR_Zpower; last by lia.
+      rewrite mult_IZR -maE -mdE -mbE -mcE -/i iE2 IZR_Zpower; first by lia.
       by lra.
     have :  pow (2 * p - 1) * pow 2 <= Rabs (mb * mc) * pow 2.
       by have := bpow_gt_0 beta 2; nra.
@@ -1222,7 +1222,7 @@ have [iE2 | i_ge3] : (i = 2 \/ 3 <= i)%Z by lia.
     by apply:  (bpow_lt beta 0 p); lia.
   apply: F2.
   apply/Rle_div_l.
-    rewrite ulp_neq_0; last by lra.
+    rewrite ulp_neq_0; first by lra.
     by apply: bpow_gt_0; lra.
   apply: Rle_trans me_le2 _.
   suff : pow (p + 2) <= (pow p - pow (p - 1)) * ulp mx by lra.
@@ -1487,9 +1487,9 @@ apply: Rle_trans (_ : Rabs f - Rabs x <= _); last first.
 pose y := (Float beta (Z.pow beta (p - 1)) (cexp f)).
 have Fy : format (F2R y).
   apply: FLX_format_Rabs_Fnum (refl_equal _) _.
-  rewrite -abs_IZR -IZR_Zpower; last by lia.
+  rewrite -abs_IZR -IZR_Zpower; first by lia.
   apply: IZR_le.
-  rewrite /y /= Z.abs_pow Z.abs_eq; last by lia.
+  rewrite /y /= Z.abs_pow Z.abs_eq; first by lia.
   by apply: Zpower_le; lia.
 have yE : F2R y = pow (p - 1) * ulp f.
   rewrite /y /F2R /=.

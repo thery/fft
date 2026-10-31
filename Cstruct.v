@@ -1,7 +1,7 @@
 (* Copyright (c)  Inria. All rights reserved. *)
 From HB Require Import structures.
 From Stdlib Require Import Reals  Psatz.
-From mathcomp Require Import all_boot all_algebra.
+From mathcomp Require Import boot order algebra.
 Import Order.TTheory GRing.Theory Num.Def Num.Theory.
 From Flocq Require Import Core Relative Sterbenz Operations Mult_error.
 From Coquelicot Require Import Coquelicot Complex.
@@ -17,13 +17,13 @@ Unset Printing Implicit Defensive.
 HB.instance Definition _ :=  Choice.on C.
 
 Lemma Cplus_opp_l c : (- c + c = 0)%C.
-Proof. by ring. Qed.
+Proof. by sring. Qed.
 
 HB.instance Definition _ := GRing.isZmodule.Build C
   Cplus_assoc Cplus_comm Cplus_0_l Cplus_opp_l.
 
 Fact C1_neq_0 : 1 != 0 :> C.
-Proof. by apply/eqP=> /RtoC_inj; lra. Qed.
+Proof. by apply/eqP=> /RtoC_inj; Lra.lra. Qed.
 
 HB.instance Definition _ := GRing.Nmodule_isNzSemiRing.Build C
   Cmult_assoc Cmult_1_l Cmult_1_r
@@ -163,11 +163,11 @@ Definition cnorm2 (n : nat) (l : seq C) : R :=
 Lemma cnorm2_ge0 n l : 0 <= cnorm2 n l.
 Proof.
 rewrite /cnorm2; elim: index_enum => [|a l1 IH].
-  by rewrite big_nil /GRing.zero /=; lra.
+  by rewrite big_nil /GRing.zero /=; Lra.lra.
 rewrite big_cons.
 have := pow2_ge_0 (Cmod (get l a)).
 rewrite /GRing.add /= in IH *.
-by nra.
+by Lra.nra.
 Qed.
 
 Definition cnorm (n : nat) (l : seq C) : R := sqrt (cnorm2 n l).
@@ -178,21 +178,21 @@ Proof.
 (split; rewrite /cnorm2); last first.
   elim: (2 ^ _)%N => [|n1 IH H]; first by rewrite big_ord0.
   rewrite big_ord_recr /= H // IH //=.
-    by rewrite Cmod_0 /GRing.add /=; lra.
-  by move=> i Hi; apply: H; rewrite ltnS ltnW.
+    by move=> i Hi; apply: H; rewrite ltnS ltnW.
+  by rewrite Cmod_0 /GRing.add /=; Lra.lra.
 move=> H i; move: H. 
 elim: (2 ^ _)%N => // n1 IH; rewrite big_ord_recr /=.
 set x := (_  * (_ * 1))%R; set s := (\sum_(_ < n1) _)%RR in IH *.
 rewrite /GRing.add /= ltnS => H1 H2.
-have x_pos : 0 <= x by rewrite /x; nra.
+have x_pos : 0 <= x by rewrite /x; Lra.nra.
 have s_pos : 0 <= s.
   rewrite /s; elim: {H1 H2 x s IH x_pos}n1 => [|n1 IH].
-    by rewrite big_ord0 /GRing.zero /=; lra.
-  by rewrite big_ord_recr /= /GRing.add /= in IH *; nra.
-have x_eq0 : x = 0 by lra.
-have s_eq0 : s = 0 by lra.
+    by rewrite big_ord0 /GRing.zero /=; Lra.lra.
+  by rewrite big_ord_recr /= /GRing.add /= in IH *; Lra.nra.
+have x_eq0 : x = 0 by Lra.lra.
+have s_eq0 : s = 0 by Lra.lra.
 case: (ltngtP i n1) H2 => // [iLn1 _|-> _]; first by apply: IH.
-by apply: Cmod_eq_0; move: x_eq0; rewrite /x; nra.
+by apply: Cmod_eq_0; move: x_eq0; rewrite /x; Lra.nra.
 Qed.
 
 Lemma cnorm_eq0 n l : cnorm2 n l = 0 <-> cnorm n l = 0.
@@ -257,18 +257,18 @@ Proof. by rewrite sum_RtoC; apply: eq_bigr => i _; rewrite Cmod2_conj. Qed.
 
 Lemma Cauchy_schwartz n l1 l2 : Cmod (cprod n l1 l2) <= cnorm n l1 * cnorm n l2.
 Proof.
-rewrite -(sqrt_pow2 _ (Cmod_ge_0 _)) -sqrt_mult_alt; last by apply: cnorm2_ge0.
+rewrite -(sqrt_pow2 _ (Cmod_ge_0 _)) -sqrt_mult_alt; first by apply: cnorm2_ge0.
 apply: sqrt_le_1_alt.
 set c := cprod _ _ _; set a := cnorm2 _ _; set b := cnorm2 _ _.
 have b_ge0 : 0 <= b by apply: cnorm2_ge0.
-have [b_eq0|b_gt0]: b = 0 \/ 0 < b by lra.
+have [b_eq0|b_gt0]: b = 0 \/ 0 < b by Lra.lra.
   rewrite /c cprod_0r.
-    by rewrite b_eq0 !Csimp01 !Rsimp01 pow_i; try lra; lia.
-  by apply/cnorm_eq0.
+    by apply/cnorm_eq0.
+  by rewrite b_eq0 !Csimp01 !Rsimp01 pow_i; try Lra.lra; lia.
 pose d : R := (\sum_(i < 2 ^ n) 
               ((Cmod (b * (get l1 i) - c * (get l2 i))) ^ 2)%R)%RR.
 have d_pos : 0 <= d by apply: sumR_ge0 => i _ _; apply: pow2_ge_0.
-suff: d = (b ^ 2 * a - b * Cmod c ^ 2)%R by nra.
+suff: d = (b ^ 2 * a - b * Cmod c ^ 2)%R by Lra.nra.
 apply: RtoC_inj.
 rewrite RtoC_minus sum_RtoC.
 under eq_bigr do rewrite Cmod2_conj Cminus_conj !Cmult_conj !RtoC_conj.
@@ -280,7 +280,7 @@ set x5 := RtoC (b * _).
 have  <- : x1 = (b ^ 2 * a)%R.
   rewrite  mulR_sumr [RHS]sum_RtoC.
   apply: eq_bigr => i _.
-  by rewrite RtoC_mult Cmod2_conj RtoC_pow; ring.
+  by rewrite RtoC_mult Cmod2_conj RtoC_pow; sring.
 have -> : x2 = x5.
   rewrite /x5 RtoC_mult Cmod2_conj.
   rewrite /x2.
@@ -288,7 +288,7 @@ have -> : x2 = x5.
   rewrite -mulC_sumr.
   under eq_bigr => i _ do
     (rewrite (_ : (get l1 i * (Cconj c * Cconj (get l2 i)) =
-                  Cconj c * (get l1 i * Cconj (get l2 i)))%C); [|ring]).
+                  Cconj c * (get l1 i * Cconj (get l2 i)))%C); [sring|]).
   rewrite -mulC_sumr.
   by congr (_ * _)%C; rewrite Cmult_comm.
 have  -> : x3 = x5.
@@ -297,20 +297,20 @@ have  -> : x3 = x5.
   rewrite -mulC_sumr.
   under eq_bigr => i _ do
     (rewrite (_ : (get l2 i * (b * Cconj (get l1 i)) =
-                  b * (get l2 i * Cconj (get l1 i)))%C); [|ring]).
+                  b * (get l2 i * Cconj (get l1 i)))%C); [sring|]).
   rewrite -mulC_sumr cprod_conj !Cmult_assoc.
-  by congr (_ * _)%C; ring.
+  by congr (_ * _)%C; sring.
 have  -> : x4 = x5.
   rewrite /x4 /x5 RtoC_mult Cmod2_conj.
   under eq_bigr do rewrite -Cmult_assoc.
   rewrite -mulC_sumr.
   under eq_bigr => i _ do
     (rewrite (_ : (get l2 i * (Cconj c * Cconj (get l2 i)) =
-                  Cconj c * (get l2 i * Cconj (get l2 i)))%C); [|ring]).
+                  Cconj c * (get l2 i * Cconj (get l2 i)))%C); [sring|]).
   rewrite -mulC_sumr /b norm2E [RHS]Cmult_comm !Cmult_assoc.
   by congr (_ * _)%C; ring.
 rewrite -[(x1 - x5 - (x5 - x5))%RR]/(x1 - x5 - (x5 - x5))%C.
-by ring.
+by sring.
 Qed.
 
 Lemma cnorm2E n l : cnorm2 n l = ((cnorm n l) ^ 2)%R.
@@ -321,18 +321,18 @@ Proof. by apply: sqrt_ge_0. Qed.
 
 Lemma cnormD n l1 l2 : cnorm n (cadd n l1 l2) <= cnorm n l1 + cnorm n l2.
 Proof.
-rewrite -[X in _ <= X]sqrt_pow2; last first.
-  by have := cnorm_ge0 n l1; have := cnorm_ge0 n l2; lra.
+rewrite -[X in _ <= X]sqrt_pow2.
+  by have := cnorm_ge0 n l1; have := cnorm_ge0 n l2; Lra.lra.
 apply: sqrt_le_1_alt.
 have -> : (cnorm2 n (cadd n l1 l2) = 
            cnorm n l2 ^ 2 + (cnorm n l1 ^ 2 + 2 * Re (cprod n l1 l2)))%R.
   apply: RtoC_inj.
   rewrite norm2E cprodDl !cprodDr -!norm2E -[cprod n l2 l1]cprod_conj.
   rewrite !cnorm2E Cplus_assoc Cplus_comm -Cplus_assoc.
-  rewrite (_ : cprod _ _ _ + _ = 2 * Re(cprod n l1 l2))%C; last first.
-    by rewrite re_alt; field.
+  rewrite (_ : cprod _ _ _ + _ = 2 * Re(cprod n l1 l2))%C.
+    by rewrite re_alt; sfield.
   by rewrite -RtoC_mult -!RtoC_plus.
-suff :  Re (cprod n l1 l2) <= cnorm n l1 * cnorm n l2 by lra.
+suff :  Re (cprod n l1 l2) <= cnorm n l1 * cnorm n l2 by Lra.lra.
 apply: Rle_trans (Rle_abs _) _.
 apply: Rle_trans (re_le_Cmod _) _.
 apply: Cauchy_schwartz.
@@ -342,7 +342,7 @@ Lemma cnormB n l1 l2 l3 :
   cnorm n (csub n l1 l2) <= cnorm n (csub n l1 l3) + cnorm n (csub n l3 l2).
 Proof.
 suff -> : csub n l1 l2 = cadd n (csub n l1 l3) (csub n l3 l2) by apply: cnormD.
-by apply/eq_in_map => i _; rewrite !get_csub //; ring.
+by apply/eq_in_map => i _; rewrite !get_csub //; sring.
 Qed.
 
 Lemma natr_RtoC_INR n : (n%:R)%RR = RtoC (INR n).
@@ -354,7 +354,7 @@ Qed.
 Lemma natrCS_neq0 n : (n.+1%:R != 0 :> C)%RR.
 Proof.
 rewrite !natr_RtoC_INR S_INR; apply/eqP => /eqP/andP[/eqP /= nE _]. 
-by have := pos_INR n;lra.
+by have := pos_INR n; Lra.lra.
 Qed.
 
 Lemma Cchar m n : (m%:R = n%:R :> C -> m = n)%RR.

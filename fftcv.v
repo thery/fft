@@ -1,5 +1,5 @@
 From Stdlib Require Import ZArith.
-From mathcomp Require Import all_boot all_algebra.
+From mathcomp Require Import boot algebra.
 From Stdlib Require Import String Reals Psatz.
 Require Import Rstruct Cstruct Cmore.
 Require Import Coquelicot.Coquelicot.
@@ -28,27 +28,28 @@ Section Complex_intervals.
 
 Variable prec: F.precision.
 
-Notation mant := Specific_bigint.BigIntRadix2.smantissa_type.
-Notation xpnt := Specific_bigint.BigIntRadix2.exponent_type.
+Abbreviation mant := Specific_bigint.BigIntRadix2.smantissa_type.
+Abbreviation xpnt := Specific_bigint.BigIntRadix2.exponent_type.
  
-Notation D := F.type.
-Notation ID := (Float.f_interval F.type).
+Abbreviation D := F.type.
+Abbreviation ID := (Float.f_interval F.type).
 Notation "x '\contained_in' I" := 
   (contains (I.convert I) (Xreal x)) (at level 20).
-Notation D2R := I.T.toR.
-Notation I0 := (I.bnd F.zero F.zero).
+
+Abbreviation D2R := I.T.toR.
+Abbreviation I0 := (I.bnd F.zero F.zero).
 Definition mkI f := (I.bnd f f).
-Notation I1 := (I.fromZ prec 1).
+Abbreviation I1 := (I.fromZ prec 1).
 Definition mkIz z := (I.fromZ prec z).
-Notation scl2 I := (I.mul prec I ((I.fromZ prec 2))).
-Notation add I J := (I.add prec I J).
-Notation mul I J := (I.mul prec I J).
-Notation sqr I := (I.sqr prec I).
-Notation sub I J := (I.sub prec I J).
-Notation inv I := (I.sub prec I).
-Notation div I J := (I.div prec I J).
-Notation sqrt I := (I.sqrt prec I).
-Notation pi := (I.pi prec).
+Abbreviation scl2 I := (I.mul prec I ((I.fromZ prec 2))).
+Abbreviation add I J := (I.add prec I J).
+Abbreviation mul I J := (I.mul prec I J).
+Abbreviation sqr I := (I.sqr prec I).
+Abbreviation sub I J := (I.sub prec I J).
+Abbreviation inv I := (I.sub prec I).
+Abbreviation div I J := (I.div prec I J).
+Abbreviation sqrt I := (I.sqrt prec I).
+Abbreviation pi := (I.pi prec).
 
 Definition FtoZ_aux beta s m e := 
 let sm := if s then Z.neg m else Z.pos m in
@@ -103,7 +104,7 @@ case: (boolP (I.subset _ _)) => [Hi|/ negP Hi].
   by apply: I.is_empty_correct Hz2 He.
 case: (boolP (I.is_empty _)) => [He Hc|//].
 apply: IH Hc => //.
-have -> : (IZR (z + 1) - 1 = IZR z)%R by rewrite plus_IZR; lra.
+have -> : (IZR (z + 1) - 1 = IZR z)%R by rewrite plus_IZR; Lra.lra.
 move=> Hz1.
 have Hz2 : IZR z \contained_in  (I.meet (mkIz z) i).
   by apply: I.meet_correct => //; apply: I.fromZ_correct.
@@ -120,7 +121,7 @@ Lemma contains_connect x y z i :
   (x <= z <= y)%R -> z \contained_in i.
 Proof.
 rewrite /contains.
-by case: I.convert => // [] [|r1] [|l1]; lra.
+by case: I.convert => // [] [|r1] [|l1]; Lra.lra.
 Qed.
 
 Lemma onlyOneZ_correct i z z1 :
@@ -130,7 +131,7 @@ rewrite /onlyOneZ.
 case E : getZCandidate => [[z2 n2]|//].
 case: (boolP (I.is_empty _)) => [He Hc Hz1|//].
 have [] := isZCandidate_correct _ Hc.
-  have -> : (IZR (z2 + 1) - 1 = IZR z2)%R by rewrite plus_IZR; lra.
+  have -> : (IZR (z2 + 1) - 1 = IZR z2)%R by rewrite plus_IZR; Lra.lra.
   move=> Hz2.
   have H1z2 : IZR z2 \contained_in  (I.meet (mkIz z2) i).
     by apply: I.meet_correct => //; apply: I.fromZ_correct.
@@ -145,20 +146,20 @@ have : [\/ (IZR z = IZR z1), (IZR z1 <= IZR z -1)%R | (IZR z + 1 <= IZR z1)%R].
   case; first by move->; left.
   by case => H; [right;left|right;right]; apply: IZR_le.
 case => [/eq_IZR//|z1Lz|zLz1].
-  by case: H1z; apply: contains_connect Hz1 H2z _; lra.
-by case: H3z; apply: contains_connect H2z Hz1 _; lra.
+  by case: H1z; apply: contains_connect Hz1 H2z _; Lra.lra.
+by case: H3z; apply: contains_connect H2z Hz1 _; Lra.lra.
 Qed.
 
 Definition chalf := F.div2 (F.fromZ 1).
 
 Lemma chalf_correct :  F.toX chalf = Xreal (/ 2).
 Proof.
-rewrite F.div2_correct //=; last first.
-  by rewrite /D2R F.fromZ_correct //= Rabs_R1; lra.
+rewrite F.div2_correct //=.
+  by rewrite /D2R F.fromZ_correct //= Rabs_R1; Lra.lra.
 by rewrite F.fromZ_correct // Xdiv_split Xmul_1_l /= /Xinv' is_zero_false.
 Qed.
 
-Notation div2 I := (I.mul_mixed prec I chalf).
+Abbreviation div2 I := (I.mul_mixed prec I chalf).
 
 Notation "l '\lcontained_in' L" :=
  (forall i,  l`_i \contained_in nth I0 L i) (at level 20).
@@ -219,26 +220,24 @@ Lemma FtoI_correct a : F.real a -> (D2R a) \contained_in (FtoI a).
 Proof.
 move=> aR /=.
 rewrite (I.F'.valid_lb_real _ aR) (I.F'.valid_ub_real _ aR) /=.
-by rewrite /D2R; case: F.toX => //= r; lra.
+by rewrite /D2R; case: F.toX => //= r; Lra.lra.
 Qed.
 
 Lemma I020 x : x \contained_in I0 -> x = 0%R.
 Proof. 
-rewrite /= F.zero_correct; case: F.valid_lb; case: F.valid_ub => //=; lra. 
+rewrite /= F.zero_correct; case: F.valid_lb; case: F.valid_ub => //=; Lra.lra. 
 Qed.
  
 Lemma I0_correct: 0 \contained_in I0.
 Proof. 
-rewrite /= F.zero_correct /= I.F'.valid_lb_zero I.F'.valid_ub_zero => /=; lra.
+rewrite /= F.zero_correct /= I.F'.valid_lb_zero I.F'.valid_ub_zero => /=; Lra.lra.
 Qed.
 
 Lemma I1_correct: 1%R \contained_in I1.
 Proof.
 have [H1 H2]:=  I.F.fromZ_DN_correct prec 1.
 have [H3 H4]:=  I.F.fromZ_UP_correct prec 1.
-rewrite /= H1 H3 /=; case: I.F.toX H2; case: I.F.toX H4 => //=.
- by move=> _ r; rewrite /le_lower /=; lra.
-by move=> r Hr r1; rewrite /le_lower /=; lra.
+by rewrite /= H1 H3 /=; case: I.F.toX H2; case: I.F.toX H4 => //=.
 Qed.
 
 Lemma mul_correct x y I J:
@@ -292,7 +291,7 @@ suff -> : Xreal (x *+ 2) = Xmul (Xreal x) (Xreal (Raux.bpow radix2 1)).
   apply: mul_correct => //.
   by apply: I.fromZ_correct.
 congr Xreal.
-by have ->: (x*2 = x + x)%R by lra.
+by have ->: (x*2 = x + x)%R by Lra.lra.
 Qed.
 
 Lemma div2_correct x I: x \contained_in I -> (x / 2) \contained_in (div2  I).
@@ -333,20 +332,20 @@ Proof.
 move=> aR /=.
 rewrite /D2C /D2R /= I.F'.valid_lb_zero I.F'.valid_ub_zero /= F.zero_correct /=.
 rewrite (I.F'.valid_lb_real _ aR) (I.F'.valid_ub_real _ aR) /=.
-by case: F.toX => /= [| r]; lra.
+by case: F.toX => /= [| r]; Lra.lra.
 Qed.
 
 Lemma CI020 x : x \Ccontained_in CI0 -> x = 0%C.
 Proof.
 rewrite /GRing.zero /= /GRing.zero; case: x => x y /=.
 rewrite I.F'.valid_lb_zero I.F'.valid_ub_zero /= F.zero_correct /=.
-by intros [? ?]; congr (_, _); lra.
+by intros [? ?]; congr (_, _); Lra.lra.
 Qed.
  
 Lemma CI0_correct: 0 \Ccontained_in CI0.
 Proof.
 by rewrite /GRing.zero /= /GRing.zero F.zero_correct /= I.F'.valid_lb_zero 
-     I.F'.valid_ub_zero => /=; lra.
+     I.F'.valid_ub_zero => /=; Lra.lra.
 Qed.
  
 
@@ -401,7 +400,7 @@ Lemma CIinv_correct x I:
 Proof.
 case: x => x1 x2; case: I => I1 I2.
 have F1 : ((x1, x2).1 ^ 2 + (x1, x2).2 ^ 2 = (x1 * x1 + x2 * x2))%R.
-  by rewrite /=; lra.
+  by rewrite /=; Lra.lra.
 move=> [H1 H2]; split; rewrite F1.
   by apply: div_correct => //; apply: add_correct; apply: sqr_correct.
 apply: div_correct; first by apply: opp_correct.
@@ -414,17 +413,17 @@ Lemma CIdiv_correct x y I J:
 Proof.
 case: x => x1 x2; case: y => y1 y2; case: I => I1 I2; case: J => J1 J2.
 move=> [H1 H2] [H3 H4]; split => /=.
-  have -> : ((y1 * (y1 * 1) + y2 * (y2 * 1)) = y1 * y1 + y2 * y2)%R by lra.
+  have -> : ((y1 * (y1 * 1) + y2 * (y2 * 1)) = y1 * y1 + y2 * y2)%R by Lra.lra.
   rewrite /Rdiv; set z := (/ _).
   have -> : ((x1 * (y1 * z) - x2 * (- y2 * z)) = (x1 * y1 + x2 * y2) * z)%R.
-    by lra.
+    by Lra.lra.
   apply: div_correct.
     by apply: add_correct; apply: mul_correct.
   by apply: add_correct; apply: sqr_correct.
-have -> : ((y1 * (y1 * 1) + y2 * (y2 * 1)) = y1 * y1 + y2 * y2)%R by lra.
+have -> : ((y1 * (y1 * 1) + y2 * (y2 * 1)) = y1 * y1 + y2 * y2)%R by Lra.lra.
 rewrite /Rdiv; set z := (/ _).
 have -> : ((x1 * (- y2 * z) + x2 * (y1 * z)) = (x2 * y1 - x1 * y2) * z)%R.
-  by lra.
+  by Lra.lra.
 apply: div_correct.
   by apply: sub_correct; apply: mul_correct.
 by apply: add_correct; apply: sqr_correct.
@@ -443,10 +442,10 @@ Proof.
 case: x => x1 x2; case: I => I1 I2.
 move=> [H1 H2]; split.
   set xx := (_ - _)%R; have -> : xx = (x1 / 2)%R.
-    by rewrite /xx /=; lra.
+    by rewrite /xx /=; Lra.lra.
   by apply: div2_correct.
 set xx := (_ + _)%R; have -> : xx = (x2 / 2)%R.
-  by rewrite /xx /=; lra.
+  by rewrite /xx /=; Lra.lra.
 by apply: div2_correct.
 Qed.
 
@@ -567,7 +566,7 @@ elim: (size _).+1 {-2}l  (leqnn (size l).+1) => // n IH [|a [|b {}l]] /=.
 - by rewrite odd_polyC.
 - by rewrite cons_poly_def odd_polyD mul0r !odd_polyC add0r.
 rewrite !ltnS => Hs.
-rewrite !cons_poly_def IH; last by apply: leq_trans Hs.
+rewrite !cons_poly_def IH; first by apply: leq_trans Hs.
 by rewrite !odd_polyD odd_polyMX even_polyD even_polyC even_polyMX odd_polyC 
            addr0.
 Qed.
@@ -659,16 +658,16 @@ elim: n l1 w => [|n IH] l1 w Hw /=.
   by rewrite cons_poly_def mul0r add0r /= coef_Poly.
 have wwE := prim_sqr Hw.
 have -> : w * w = w ^+2 by [].
-rewrite ci_map2_plus; last first.
+rewrite ci_map2_plus.
   by rewrite !(size_c_fft, size_ci_map2, size_ci_pow, minnn, addn0).
-rewrite ci_map2_mult; last first.
+rewrite ci_map2_mult.
   by rewrite size_ci_pow !size_c_fft.
 rewrite IH // ci_even_correct.
 rewrite ci_pow_correct.
 rewrite mulr0 addr0.
-rewrite ci_map2_minus //; last first.
+rewrite ci_map2_minus //.
   by rewrite size_c_fft size_ci_map2 size_ci_pow !size_c_fft minnn addn0.
-rewrite size_c_fft !IH // ci_map2_mult; last first.
+rewrite size_c_fft !IH // ci_map2_mult.
   by rewrite size_ci_pow !size_c_fft.
 rewrite !mulr0 !addr0 ci_even_correct ci_pow_correct.
 rewrite size_c_fft IH // ci_odd_correct.
@@ -689,7 +688,7 @@ congr (_ * _).
 apply/polyP => i.
 rewrite !coefE.
 case: (ltnP i (2 ^ n)) => [iL2n|nLi]; last first.
-  rewrite ifN.
+  rewrite ifN; last first.
     by rewrite subr0 (leq_sizeP _ _ (leq_trans (size_fft _ _ _) nLi)).
   by rewrite -leqNgt geq_min (leq_trans _ nLi) // size_poly.
 rewrite modnDl modn_small // exprD prim_exp2nS // mulN1r mulrN.
@@ -925,16 +924,16 @@ Lemma c_ifft_correct n l1 (w : C) :
  (2 ^ n).-primitive_root w -> Poly (c_ifft n l1 w) = ifft n w (Poly l1).
 Proof.
 move=> Hw; rewrite /ifft /c_ifft ci_map_scal mul_polyC; congr (_ *: _).
-  have Hp : (2 ^ n <> 0)%R by apply: pow_nonzero; lra.
+  have Hp : (2 ^ n <> 0)%R by apply: pow_nonzero; Lra.lra.
   rewrite natrX RtoC_inv //.
-  rewrite RtoC_pow /GRing.inv /= /Cinvx ifT; last first.
+  rewrite RtoC_pow /GRing.inv /= /Cinvx ifT.
     suff Hf : (2 != 0 :> C) by rewrite expf_eq0 (negPf Hf) andbF.
-    by apply/eqP => [] /eqP/andP[/= /eqP]; lra.
+    by apply/eqP => [] /eqP/andP[/= /eqP]; Lra.lra.
   by rewrite Cpow_ring (RtoC_IZR 2).
 rewrite c_fft_correct.
-  rewrite /GRing.inv /= /Cinvx ifT //.
-  by apply: prim_neq0 Hw; apply: expn_gt0.
-by rewrite Cinv_ring; apply: primJ.
+  by rewrite Cinv_ring; apply: primJ.
+rewrite /GRing.inv /= /Cinvx ifT //.
+by apply: prim_neq0 Hw; apply: expn_gt0.
 Qed.
 
 Definition ci_ifft (n : Datatypes.nat) (l1 : seq CItype) (w : CItype) : 
@@ -1032,7 +1031,7 @@ Proof.
 have Hf : 
   (2 * PI / INR (2 ^ n)) \contained_in div (scl2 pi) (mkIz (two_power_nat n)).
   apply: div_correct.
-    have <- : (PI *+ 2 = 2 * PI)%R by rewrite mulr2n /GRing.add /=; lra.
+    have <- : (PI *+ 2 = 2 * PI)%R by rewrite mulr2n /GRing.add /=; Lra.lra.
     by apply/scl2_correct/I.pi_correct.
   have -> : INR (2 ^ n) = IZR (two_power_nat n).
     by rewrite two_power_nat_equiv -pow_expn pow_INR -pow_IZR.
@@ -1106,7 +1105,7 @@ have F z : z2int (Z.succ z) = z2int z + 1.
     by rewrite !z2intN !opprD !opprK.
   case: t t_pos => // p _; split; first by rewrite /= Pos2Nat.inj_add.
   case : (Pos.eq_dec p 1) => [->//|p_neq1].
-  rewrite -Pos2Z.inj_pred //= Pos2Nat.inj_pred; last by lia.
+  rewrite -Pos2Z.inj_pred //= Pos2Nat.inj_pred; first by lia.
   have : (0 < Pos.to_nat p)%nat by apply/ltP/Pos2Nat.is_pos.
   case : Pos.to_nat => //= k _.
   by rewrite intS [(1 + _)]addrC addrK.
@@ -1288,8 +1287,8 @@ rewrite /ci_fft_xmul => /(_ _ _ H2).
 have H3 : (0 < 2 ^ n)%nat by apply: expn_gt0.
 have H4 := @c_fft_mul_correct n [seq mkZ i  | i <- l1] [seq mkZ i  | i <- l2] 
               _ (prim_Cexp1 H3).
-rewrite fft_mul_correct // in H4; last 3 first.
-- by apply/negP => [] /andP[/eqP]; rewrite /= /GRing.add; lra.
+rewrite fft_mul_correct // in H4.
+- by apply/negP => [] /andP[/eqP]; rewrite /= /GRing.add; Lra.lra.
 - apply: leq_trans (leq_pred _) (mylog_correct _).
   by apply: leq_add; apply: leq_trans (size_Poly _) _; rewrite size_map.
 - by apply: prim_Cexp1.
@@ -1308,7 +1307,7 @@ have F x : Poly [seq z2int i  | i <- x] = int2Poly _ [seq z2int i  | i <- x].
   rewrite cons_poly_def int2Poly_cons IH addrC mulrC; congr (_ + _).
   rewrite -polyC_intr; congr (_%:P).
   suff K n1 : n1 = n1 %:~R :> int by case: x.
-  elim: n1 => //= n1 IH1.
+  elim/int_ind: n1 => //= n1 IH1.
     by rewrite -addn1 !rmorphD /= -IH1.
   by rewrite !rmorphN /= -addn1 !rmorphD /= !opprD -!rmorphN /= -IH1.
 rewrite !F.
@@ -1319,7 +1318,7 @@ have G x : Poly [seq mkZ i  | i <- x] = int2Poly C [seq z2int i  | i <- x].
   rewrite -polyC_intr; congr (_%:P).
   suff -> : (z2int x)%:~R = RtoC (IZR (int2z (z2int x))) by rewrite z2intK.
   suff K n1 : n1%:~R = IZR (int2z n1) :> C by case: z2int.
-  elim: n1 => // n1 IH2.
+  elim/int_ind: n1 => // n1 IH2.
     by rewrite -addn1 !rmorphD int2zD !plus_IZR !RtoC_plus -IH2.
   rewrite int2zN -[in RHS]addn1 rmorphD int2zD Z.opp_add_distr -int2zN.
   rewrite plus_IZR !RtoC_plus -IH2 rmorphN -addn1 !rmorphD /= opprD.

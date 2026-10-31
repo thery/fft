@@ -19,10 +19,11 @@ install: [make "install"]
 depends: [
   "coq" 
   "coq-bignums" 
-  "rocq-mathcomp-ssreflect" {(>= "2.5.0")}
-  "coq-flocq" {(>= "4.2.1")}
-  "coq-interval" {(>= "4.11.3)}
-  "coq-coquelicot" {(>= "3.4.3")}
+  "rocq-mathcomp-ssreflect" {(>= "2.6.0")}
+  "rocq-mathcomp-algebra" {(>= "2.6.0")}
+  "coq-flocq" {(>= "4.2.2")}
+  "coq-interval" {(>= "4.11.5)}
+  "coq-coquelicot" {(>= "3.4.5")}
 ]
 
 tags: [

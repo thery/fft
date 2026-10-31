@@ -2,7 +2,7 @@
 
 From Stdlib Require Import Reals  Psatz.
 From Flocq Require Import Core Relative Sterbenz Operations.
-From mathcomp Require Import all_boot.
+From mathcomp Require Import boot.
 From Coquelicot Require Import Coquelicot.
 Require Import Rmore Cmore Fmore kahan_mult.
 Set Implicit Arguments.
@@ -15,7 +15,7 @@ Hypothesis Hbeta2: Z.lt 1 beta.
 (* not in the paper, needed for kahan *)
 Hypothesis Hbeta_even : Z.even beta.
 Hypothesis Hp2: Z.lt 1 p.
-Local Notation pow e := (bpow beta e).
+Local Abbreviation pow e := (bpow beta e).
 
 Local 
 Instance
@@ -27,19 +27,19 @@ Qed.
 
 Open Scope R_scope.
 
-Notation u := (u p beta).
-Notation u_gt_0 := (u_gt_0 p beta).
+Abbreviation u := (u p beta).
+Abbreviation u_gt_0 := (u_gt_0 p beta).
 
 Variable choice : Z -> bool.
 
-Local Notation fexp := (FLX_exp p).
-Local Notation format := (generic_format beta fexp).
-Local Notation iformat := (generic_formatC beta fexp).
-Local Notation cexp := (cexp beta fexp).
-Local Notation mant := (scaled_mantissa beta fexp).
-Local Notation RN := (round beta fexp (Znearest choice)).
-Local Notation RNC:= (roundC beta fexp (Znearest choice)).
-Local Notation ulp := (ulp beta fexp).
+Local Abbreviation fexp := (FLX_exp p).
+Local Abbreviation format := (generic_format beta fexp).
+Local Abbreviation iformat := (generic_formatC beta fexp).
+Local Abbreviation cexp := (cexp beta fexp).
+Local Abbreviation mant := (scaled_mantissa beta fexp).
+Local Abbreviation RN := (round beta fexp (Znearest choice)).
+Local Abbreviation RNC:= (roundC beta fexp (Znearest choice)).
+Local Abbreviation ulp := (ulp beta fexp).
 
 Hypothesis choice_sym: forall x, choice x  = negb (choice (- (x + 1))).
 
@@ -177,7 +177,7 @@ have [->|c1_neq0] := Ceq_dec c1 0.
 have [->|c2_neq0] := Ceq_dec c2 0.
   by rewrite /= A1_imult3E Cmult_0_r A1_imult_0_r !Cmult_0_r.
 have c1c2_neq_0 : (c1 * c2 <> 0)%C by apply: Cmult_neq_0.
-rewrite /= !Cmod_div //; last first.
+rewrite /= !Cmod_div //.
   repeat apply: Cmult_neq_0 => //.
     by apply/Copp_neq_0/Ci_neq_0.
   by apply: Ci_neq_0.
@@ -210,7 +210,7 @@ have [->|c1_neq0] := Ceq_dec c1 0.
 have [->|c2_neq0] := Ceq_dec c2 0.
   by rewrite /= A1_imult4E !Cmult_0_r A1_imult_0_l !Cmult_0_l.
 have c1c2_neq_0 : (c1 * c2 <> 0)%C by apply: Cmult_neq_0.
-rewrite /= !Cmod_div //; last first.
+rewrite /= !Cmod_div //.
   repeat apply: Cmult_neq_0 => //.
     by apply: Ci_neq_0.
   by apply/Copp_neq_0/Ci_neq_0.
@@ -327,7 +327,7 @@ have [->|c1_neq0] := Ceq_dec c1 0.
 have [->|c2_neq0] := Ceq_dec c2 0.
   by rewrite /= A3_imult3E Cmult_0_r A3_imult_0_r !Cmult_0_r.
 have c1c2_neq_0 : (c1 * c2 <> 0)%C by apply: Cmult_neq_0.
-rewrite /= !Cmod_div //; last first.
+rewrite /= !Cmod_div //.
   repeat apply: Cmult_neq_0 => //.
     by apply/Copp_neq_0/Ci_neq_0.
   by apply: Ci_neq_0.
@@ -361,7 +361,7 @@ have [->|c1_neq0] := Ceq_dec c1 0.
 have [->|c2_neq0] := Ceq_dec c2 0.
   by rewrite /= A3_imult4E !Cmult_0_r A3_imult_0_l !Cmult_0_l.
 have c1c2_neq_0 : (c1 * c2 <> 0)%C by apply: Cmult_neq_0.
-rewrite /= !Cmod_div //; last first.
+rewrite /= !Cmod_div //.
   repeat apply: Cmult_neq_0 => //.
     by apply: Ci_neq_0.
   by apply/Copp_neq_0/Ci_neq_0.
@@ -374,10 +374,10 @@ Qed.
 
 
 (* 2.1 *)
-Notation error_bound_ulp_u := (error_bound_ulp_u beta Hp2 choice).
+Abbreviation error_bound_ulp_u := (error_bound_ulp_u beta Hp2 choice).
 
 (* 2.2 *)
-Notation RN_E := (RN_E beta Hp2 choice).
+Abbreviation RN_E := (RN_E beta Hp2 choice).
 
 Inductive h := zero | one | two | three.
 
@@ -408,12 +408,12 @@ Qed.
 
 Lemma Cmult_i c1 c2 :
   let (r, i) :=  (c1 * c2)%C in 
-  (c1 * Ci * c2 = ((- i)%R, r))%C.
+  (c1 * Ci * c2)%C = (- i, r).
 Proof. by congr (_, _); simpl; lra. Qed.
 
 Lemma zh_i h c1 c2 :
   let (r, i) :=  zh h c1 c2 in 
-  zh h c1 (Ci * c2)%C = ((- i)%R, r).
+  zh h c1 (Ci * c2)%C = (- i, r).
 Proof.
 case: c1 => a b; case: c2 => c d. 
 case: h => /=.
@@ -445,7 +445,7 @@ have [->|c1_neq0] := Ceq_dec c1 0.
 have [->|c2_neq0] := Ceq_dec c2 0.
   by rewrite !(zh_0_r, Cmult_0_r, Cminus_0_r) Cdiv_0_l.
 have c1c2_neq_0 : (c1 * c2 <> 0)%C by apply: Cmult_neq_0.
-rewrite !Cmod_div //; last first.
+rewrite !Cmod_div //.
   by repeat apply: Cmult_neq_0 => //; apply: Ci_neq_0.
 congr (_ / _); last by rewrite !Cmod_mult Cmod_Ci; lra.
 have := zh_i h c1 c2.
@@ -476,7 +476,7 @@ have -> : Cmod (A3_imult c1 c2 - (c1 * c2)%C)%C =
 pose a := c1.1; pose b := c1.2; pose c := c2.1; pose d := c2.2.
 have u_gt_0 := u_gt_0.
 have -> : 2 * u = sqrt ((2 * u) ^ 2) by rewrite sqrt_pow2; lra.
-rewrite -sqrt_mult_alt; last by nra.
+rewrite -sqrt_mult_alt; first by nra.
 apply: sqrt_le_1_alt.
 rewrite /r3 /i3 [_.1]/= -/a -/b -/c -/d [_.2]/= -/a -/b -/c -/d.
 have Fa : format a by case: Fc1.
@@ -503,7 +503,7 @@ rewrite Rmult_1_r.
 have [eps1 [-> eps1Lu]]:= RN_E (b * d).
 have [eps2 [-> eps2Lu]]:= RN_E (a * c - b * d * (1 + eps1)).
 rewrite [X in Rabs X](_ : _ = (a * c - b * d) * eps2 - (b * d) * eps1 - 
-                              (b * d) * eps1 * eps2); last by lra.
+                              (b * d) * eps1 * eps2); first by lra.
 apply: Rle_trans (Rabs_triang _ _) _.
 apply: Rle_trans (Rplus_le_compat_r _ _ _ (Rabs_triang _ _)) _.
 rewrite !Rabs_Ropp ![Rabs (_ * eps2)]Rabs_mult ![Rabs (_ * eps1)]Rabs_mult.
@@ -527,7 +527,7 @@ rewrite Rmult_1_r.
 have [eps1 [-> eps1Lu]]:= RN_E (b * c).
 have [eps2 [-> eps2Lu]]:= RN_E (a * d + b * c * (1 + eps1)).
 rewrite [X in Rabs X](_ : _ = (a * d + b * c) * eps2 + (b * c) * eps1 + 
-                              (b * c) * eps1 * eps2); last by lra.
+                              (b * c) * eps1 * eps2); first by lra.
 apply: Rle_trans (Rabs_triang _ _) _.
 apply: Rle_trans (Rplus_le_compat_r _ _ _ (Rabs_triang _ _)) _.
 rewrite ![Rabs (_ * eps2)]Rabs_mult ![Rabs (_ * eps1)]Rabs_mult.
@@ -713,7 +713,7 @@ have RNRfE : RN (Rabs f) = pow k.
     by apply: bpow_ge_0.
   suff: ulp (pow k) = delta by split; split_Rabs; lra.
   rewrite /delta ulpbd_eq -ulpf_eq -[ulp f]ulp_abs.
-  rewrite ulp_bpow ulp_neq_0 // /cexp /fexp; last by gsplit_Rabs; lra.
+  rewrite ulp_bpow ulp_neq_0 // /cexp /fexp; first by gsplit_Rabs; lra.
   rewrite (mag_unique_pos beta _ (k + 1)) //.
   have -> : (k + 1 - 1)%Z = k by lia.
   split; first by lra.
@@ -867,13 +867,13 @@ suff: Rabs (RN 9 - 9) <= /4 * ulp 9 <= 9 / 8.
   have F_g := bpow_gt_0 beta (ya + yb).
   gsplit_Rabs; nra.
 have -> : ulp 9 = 4.
-  rewrite ulp_neq_0 /cexp /fexp; last by lra.
+  rewrite ulp_neq_0 /cexp /fexp; first by lra.
   rewrite pE betaEE.
   rewrite (mag_unique_pos radix2 _ 4) //=.
   by lra.
 split; last by lra.
 have ulp8 : ulp 8 = 4.
-  rewrite ulp_neq_0 /cexp /fexp ; last by lra.
+  rewrite ulp_neq_0 /cexp /fexp ; first by lra.
   rewrite pE betaEE.
   by rewrite (mag_unique_pos radix2 _ 4) /=; lra.
 suff -> : RN 9 = 8 by gsplit_Rabs; lra.
@@ -888,9 +888,9 @@ apply: round_UP_eq.
 pose f := Float beta 3 2.
 apply:(@FLX_format_Rabs_Fnum p beta Hp2 12 f).
 - by rewrite /F2R /= betaEE /Z.pow_pos /=; lra.
-- rewrite /f /= Rabs_pos_eq; last by lra.
+- rewrite /f /= Rabs_pos_eq; first by lra.
   by rewrite betaEE pE -[bpow _ _]/4; lra.
-- rewrite -{1}succ8 pred_succ; first by lra.
+- rewrite -{1}succ8 pred_succ; last by lra.
   by rewrite pow3; apply: generic_format_bpow; rewrite /fexp ; lia.
 rewrite -Rf; apply: round_N_eq_DN;  lra.
 Qed. 
@@ -923,7 +923,7 @@ rewrite Rmult_1_r.
 have [eps1 [-> eps1Lu]]:= RN22_E pE betaEE Fb Fd.
 have [eps2 [-> eps2Lu]]:= RN_E (a * c - b * d * (1 + eps1)).
 rewrite [X in Rabs X](_ : _ = (a * c - b * d) * eps2 - (b * d) * eps1 - 
-                              (b * d) * eps1 * eps2); last by lra.
+                              (b * d) * eps1 * eps2); first by lra.
 apply: Rle_trans (Rabs_triang _ _) _.
 apply: Rle_trans (Rplus_le_compat_r _ _ _ (Rabs_triang _ _)) _.
 rewrite !Rabs_Ropp ![Rabs (_ * eps2)]Rabs_mult ![Rabs (_ * eps1)]Rabs_mult.
@@ -1256,7 +1256,7 @@ Qed.
 
 (* Section 4.1 *)
 
-Notation n:= (Zfloor (sqrt (/ 2 * pow (p - 1))) + 1)%Z.
+Abbreviation n:= (Zfloor (sqrt (/ 2 * pow (p - 1))) + 1)%Z.
 
 Lemma Hn1 : (1 <= n)%Z.
 Proof.
@@ -1296,13 +1296,13 @@ move => h.
 have: / (2 * u) * (2 * u + sqrt u) <= / (2 * u) * 1.
   apply: Rmult_le_compat_l => //. 
   by rewrite Rinv_mult; lra.
-rewrite Rmult_1_r Rmult_plus_distr_l Rinv_l; last by lra.
+rewrite Rmult_1_r Rmult_plus_distr_l Rinv_l; first by lra.
 rewrite Rplus_comm; apply/Rle_trans/Rplus_le_compat_r.
 rewrite Rinv_mult.
-rewrite -Rmult_assoc sqrt_mult; [|lra|lra].
-rewrite sqrt_square; last by lra.
+rewrite -Rmult_assoc sqrt_mult; [lra|lra|].
+rewrite sqrt_square; first by lra.
 rewrite Rmult_assoc; apply: Rmult_le_compat_l; first lra.
-rewrite -[X in X * _]sqrt_square; last by lra.
+rewrite -[X in X * _]sqrt_square; first by lra.
 by rewrite sqrt_mult 1?Rmult_assoc -?sqrt_mult ?Rinv_l ?Rmult_1_r; lra.
 Qed.
 
@@ -1324,21 +1324,21 @@ have  iuE: pow (p - 1) = / (2 * u).
 rewrite iuE.
 apply: (Rmult_lt_reg_r (2 *u)); first by lra.
 rewrite [X in X < _](_ : _ = 4 * u * sqrt (/ 2 * / (2 * u)) + 4 * u + 1);
-    last by field; lra.
-rewrite [X in _ < X](_ : _ = IZR beta); last by field; lra.
+    first by field; lra.
+rewrite [X in _ < X](_ : _ = IZR beta); first by field; lra.
 rewrite Rinv_mult -?Rmult_assoc 1?sqrt_mult ?sqrt_square //;
-    [|lra|lra|lra].
+    [lra|lra|lra|].
 have-> :  4 * / 2 * pow (1 - p) = 4 * u by rewrite /u; lra.
-rewrite -[X in 4 * X * _]sqrt_sqrt; last lra.
+rewrite -[X in 4 * X * _]sqrt_sqrt; first by lra.
 have->:  4 * (sqrt u * sqrt u) * (/ 2 * sqrt (/ u)) = 2 * sqrt u.
-  rewrite sqrt_Rinv; last by lra.
+  rewrite sqrt_Rinv; first by lra.
   by field; have := sqrt_lt_R0 u; lra.
 suff: 3 * u + sqrt u + / 2 * (1 - IZR beta) <= 0 by lra.
 apply: Rle_trans (_ : 3 * u + sqrt u - / 2 <= _).
   apply: Rplus_le_compat_l.
   suff: 2 <= IZR beta by lra.
   by apply: IZR_le; lia.
-rewrite -{1}(sqrt_sqrt u); last by lra.
+rewrite -{1}(sqrt_sqrt u); first by lra.
 set su := sqrt u.
 suff:  6 * (su * su) + 2 * su - 1 <= 0 by lra.
 pose v := / 6 * (sqrt 7 - 1).
@@ -1358,7 +1358,7 @@ have supos := sqrt_pos u; have s7pos := sqrt_pos 7.
 suff: (su - (- 2 + 2 * sqrt 7) / 12) <= 0 by rewrite /su; nra.
 suff: sqrt u <= v by rewrite -/su /v; lra.
 apply: Rsqr_incr_0_var; last by lra.
-rewrite Rsqr_sqrt; last by lra.
+rewrite Rsqr_sqrt; first by lra.
 apply: Rle_trans (_ : / 14 <= _).
   suff: 2 * u <= / 7 by lra.
   rewrite -(Rinv_inv (2 * u)). 
@@ -1378,7 +1378,7 @@ have  iuE: pow (p - 1) = / (2 * u).
   have->: (p - 1 = - (1 - p))%Z by lia.
   rewrite bpow_opp /u; congr Rinv; lra.
 split.
-  rewrite [X in X < _](_ : _ = Rsqr (sqrt  (/ 2 * pow (p - 1)))); last first.
+  rewrite [X in X < _](_ : _ = Rsqr (sqrt  (/ 2 * pow (p - 1)))).
     by rewrite Rsqr_sqrt //; move:(bpow_ge_0 beta (p -1)); lra.
   apply: Rsqr_incrst_1.
   - by have := Zfloor_ub (sqrt (/ 2 * pow (p - 1))); rewrite -plus_IZR.
@@ -1386,21 +1386,21 @@ split.
   apply: IZR_le.
   suff: (0 <= Zfloor (sqrt (/ 2 * pow (p - 1))))%Z by lia.
   by apply/Zfloor_lub/sqrt_ge_0.
-rewrite -[X in _ <= X]Rsqr_sqrt; last by apply: bpow_ge_0.
+rewrite -[X in _ <= X]Rsqr_sqrt; first by apply: bpow_ge_0.
 apply: Rsqr_incr_1; first last.
 - by apply: sqrt_ge_0.
 - by apply: IZR_le; move: Hn1; lia.
 rewrite plus_IZR.
 apply: Rle_trans (_ : (sqrt (/ 2 * pow (p - 1))) +1 <= _).
 apply/Rplus_le_compat_r/Zfloor_lb.
-rewrite sqrt_mult; [|lra | apply: bpow_ge_0; lra].
+rewrite sqrt_mult; [lra | apply: bpow_ge_0; lra|].
 suff: 1 <= (1 - sqrt (/2)) * sqrt (pow (p - 1)) by lra.
 apply: Rsqr_incr_0; [|lra|]; last first.
   apply: Rmult_le_pos; last by apply: sqrt_ge_0.
   suff: sqrt (/ 2) <= 1 by lra.
   apply: Rsqr_incr_0; [|apply: sqrt_ge_0 | lra].
   by rewrite Rsqr_sqrt /Rsqr; lra.
-rewrite Rsqr_mult Rsqr_sqrt; last by apply: bpow_ge_0.
+rewrite Rsqr_mult Rsqr_sqrt; first by apply: bpow_ge_0.
 set den := 1 -sqrt (/ 2).
 have denpos: 0 < den.
   suff:  sqrt (/ 2) < 1 by rewrite /den; lra.
@@ -1409,13 +1409,13 @@ have denpos: 0 < den.
 rewrite /Rsqr Rmult_1_r.
 apply: Rmult_le_reg_l (_ :  0 < /(den * den)) _.
   by apply: Rinv_0_lt_compat; nra.
-rewrite -Rmult_assoc Rinv_l; last by nra.
+rewrite -Rmult_assoc Rinv_l; first by nra.
 rewrite Rmult_1_r Rmult_1_l; apply: Rle_trans bpowge12.
 apply: Rmult_le_reg_r (_ : 0 < (den * den)) _; first by nra.
-rewrite Rinv_l; last by nra.
+rewrite Rinv_l; first by nra.
 have s2 : sqrt 2 ^ 2 = 2 by rewrite  - Rsqr_pow2  Rsqr_sqrt ; lra.
 suff: sqrt (/ 2) <=/( 24/ 17) by rewrite /den; nra.
-rewrite sqrt_Rinv; last by lra.
+rewrite sqrt_Rinv; first by lra.
 apply: Rinv_le; first by lra.
 apply: Rsqr_incr_0; [|lra|apply: sqrt_ge_0].
 rewrite Rsqr_sqrt /Rsqr; lra.
@@ -1430,10 +1430,10 @@ set z := (c * c)%C.
 have zne0: (z <> 0) %C by apply: Cmult_neq_0.
 have Cmodz_gt_0 : 0 < Cmod z by apply/Cmod_gt_0.
 apply: Rmult_le_reg_r (Cmodz_gt_0) _.
-rewrite Rmult_assoc Rinv_l; last by lra.
+rewrite Rmult_assoc Rinv_l; first by lra.
 rewrite -Cmod_mult Rmult_1_r.
 set zi := zh h _ _.
-rewrite [X in _ <= Cmod X](_ : _ = zi - z)%C; last by field.
+rewrite [X in _ <= Cmod X](_ : _ = zi - z)%C; first by field.
 apply: Rle_trans (Rmax_Cmod _).
 apply: Rle_trans (Rmax_l _ _).
 by apply: Req_le; congr Rabs; rewrite /zi /r1.
@@ -1449,7 +1449,7 @@ Proof.
 suff: 0 <= IZR n by rewrite /b; have := bpow_gt_0 beta (p - 1); lra.
 apply: IZR_le.
 suff: (0 <= (Zfloor (sqrt (/ 2 * pow (p - 1)))))%Z by lia.
-rewrite -Ztrunc_floor; last by apply: sqrt_ge_0.
+rewrite -Ztrunc_floor; first by apply: sqrt_ge_0.
 rewrite -(Ztrunc_IZR 0).
 apply/Ztrunc_le/sqrt_ge_0.
 Qed.
@@ -1462,14 +1462,14 @@ pose f := Float beta (beta ^ (p-1) + n)%Z 0.
 apply/generic_format_FLX/(FLX_spec _ _ _ f).
   rewrite /b /f /F2R /= Rmult_1_r.
   by rewrite  [RHS] plus_IZR IZR_Zpower //; lia.
-rewrite /f /= Z.abs_eq.
+rewrite /f /= Z.abs_eq; last first.
   apply: lt_IZR; rewrite plus_IZR !IZR_Zpower //; lia.
-apply: le_IZR; rewrite plus_IZR IZR_Zpower; last lia.
+apply: le_IZR; rewrite plus_IZR IZR_Zpower; first by lia.
 apply: Rplus_le_le_0_compat.
 - by apply: bpow_ge_0.
-rewrite plus_IZR; apply: Rplus_le_le_0_compat; last lra.
+rewrite plus_IZR; apply: Rplus_le_le_0_compat; last by lra.
 apply: IZR_le.
-rewrite -Ztrunc_floor; last by apply: sqrt_ge_0.
+rewrite -Ztrunc_floor; first by apply: sqrt_ge_0.
 by rewrite -(Ztrunc_IZR 0);apply/Ztrunc_le/sqrt_ge_0.
 Qed.
 
@@ -1492,7 +1492,7 @@ Proof. by rewrite /pred1; apply: pred_UP_eq_DN. Qed.
 Lemma pred1_lt x (xpos: 0 < x): pred1 x < x.
 Proof.
 case : (generic_format_EM beta fexp x) => Fx.
-  rewrite format_pred1E // pred_eq_pos; last by lra.
+  rewrite format_pred1E // pred_eq_pos; first by lra.
   by apply: pred_pos_lt_id; lra.
 rewrite nformat_pred1E //.
 by case: (round_DN_UP_lt beta fexp x).
@@ -1511,7 +1511,7 @@ case : (generic_format_EM beta fexp x) => Fx.
   apply: Rle_trans (_ : x - ulp (pred1 x) <= _).
     suff:  ulp (pred1 x) <= ulp x by lra.
     by apply: ulp_le; rewrite !Rabs_pos_eq; lra.
-  rewrite format_pred1E // pred_eq_pos; last by lra.
+  rewrite format_pred1E // pred_eq_pos; first by lra.
   suff: pred_pos beta fexp x + ulp (pred_pos beta fexp x) = x by lra.
   by apply: pred_pos_plus_ulp.
 rewrite nformat_pred1E //.
@@ -1591,10 +1591,10 @@ rewrite -Rinv_mult.
 apply: Req_le.
 have ->: (p - 1 = - ( 1  - p))%Z by lia.
 rewrite bpow_opp -Rinv_mult.
-rewrite  sqrt_Rinv; last lra.
+rewrite  sqrt_Rinv; first by lra.
 congr Rinv; apply: Rsqr_inj; [apply: sqrt_ge_0; lra|lra|].
-rewrite Rsqr_sqrt; last lra.
-rewrite Rsqr_mult Rsqr_sqrt; last by lra.
+rewrite Rsqr_sqrt; first by lra.
+rewrite Rsqr_mult Rsqr_sqrt; first by lra.
 rewrite /u /Rsqr; lra.
 Qed.
 
@@ -1606,11 +1606,11 @@ Proof.
 have iu_gt_0:= (Rinv_0_lt_compat _  u_gt_0).
 have supos:= (sqrt_lt_R0 _ u_gt_0).
 have isu_gt_0:= (Rinv_0_lt_compat _  supos).
-rewrite -sqrt_Rinv; last by lra.
+rewrite -sqrt_Rinv; first by lra.
 set iu := /u.
 have-> : sqrt iu ^ 3 = iu * sqrt (iu).
   rewrite -2!tech_pow_Rmult pow_1 2?Rinv_mult.
-  rewrite sqrt_sqrt; first lra.
+  rewrite sqrt_sqrt; last by lra.
   by rewrite /iu; lra.
 set siu:= sqrt iu.
 suff : siu ^ 2 = iu by rewrite /Rsqr; nra.
@@ -1639,7 +1639,7 @@ Qed.
 Let s := Rsqr b.
 Let s' := RN s.
 Let r := Rsqr a - s.
-Notation c := (a + Ci * b)%C.
+Abbreviation c := (a + Ci * b)%C.
 Let r1 := (A1_imult c c)%C.1.
 Let f := (pow (p -1) + 2*IZR n) * pow (p-1).
 Let g := Rsqr (IZR n).
@@ -1660,8 +1660,8 @@ Proof.
 have fpos:= fpos.
 have bpm1:= (bpow_gt_0 beta (p -1)).
 have npos: 1 <= IZR n  by apply: IZR_le; move: Hn1; lia.
-rewrite ulp_neq_0 /cexp /fexp; last lra; congr bpow.
-rewrite (mag_unique_pos beta f (2 * p - 1)%Z); first lia.
+rewrite ulp_neq_0 /cexp /fexp; first (by lra); congr bpow.
+rewrite (mag_unique_pos beta f (2 * p - 1)%Z); last by lia.
 have->: (2 * p - 1 - 1 = p -1 + (p -1))%Z by lia.
 have->:  (2 * p - 1 = (p + (p -1)))%Z by lia.
 rewrite !(bpow_plus _ _ (p -1)) /f.
@@ -1671,7 +1671,7 @@ Qed.
 
 Fact magfE : (mag beta f = 2 * p - 1 :>Z)%Z.
 Proof.
-move: ulpfE; rewrite ulp_neq_0 /cexp /fexp; last by move: fpos; lra.
+move: ulpfE; rewrite ulp_neq_0 /cexp /fexp; first by move: fpos; lra.
 by move/bpow_inj; lia.
 Qed.
 
@@ -1685,15 +1685,15 @@ pose ff := Float beta (beta ^ (p -1) + (2 * n))  (p -1).
 have mffE : ((Fnum ff) =  beta ^ (p - 1) + 2 * n)%Z by [].
 apply/generic_format_FLX/(FLX_spec _ _ _ ff).
   congr Rmult.
-  rewrite mffE 2!plus_IZR mult_IZR (IZR_Zpower beta); last by lia.
+  rewrite mffE 2!plus_IZR mult_IZR (IZR_Zpower beta); first by lia.
   congr Rplus; congr Rmult.
   by rewrite plus_IZR.
-rewrite /ff Z.abs_eq mffE.
+rewrite /ff Z.abs_eq mffE; last first.
   apply: lt_IZR.
-  rewrite plus_IZR mult_IZR  !IZR_Zpower; [|lia|lia].
+  rewrite plus_IZR mult_IZR  !IZR_Zpower; [lia|lia|].
   by apply: bpow7; lra.
 apply: le_IZR; rewrite plus_IZR mult_IZR.
-rewrite IZR_Zpower; last by lia.
+rewrite IZR_Zpower; first by lia.
 suff: 0 <= IZR n by have := bpow_ge_0 beta (p - 1); lra.
 by apply: IZR_le; move:Hn1; lia.
 Qed.
@@ -1731,7 +1731,7 @@ split.
     by apply: bpow_mag_le; lra.
   have uP : 0 < ulp f by rewrite ulpfE; apply: bpow_gt_0.
   by rewrite Rabs_pos_eq; lra.
-rewrite -succ_eq_pos; last lra.
+rewrite -succ_eq_pos; first by lra.
 apply: succ_le_lt => //; first by apply: format_pow.
 rewrite -magfE.
 by have := bpow_mag_gt beta f; rewrite Rabs_pos_eq; lra.
@@ -1768,7 +1768,7 @@ rewrite ulp_neq_0 /cexp ; try (move: s'_gt_0; lra).
 rewrite {1}/fexp.
 apply: bpow_le.
 suff: (2 * p - 1 <= mag beta s')%Z by lia.
-apply: mag_ge_bpow; rewrite Rabs_pos_eq; last by lra.
+apply: mag_ge_bpow; rewrite Rabs_pos_eq; first by lra.
 have-> : (2 * p - 1 - 1 = 2 * p - 2)%Z by lia.
 lra.
 Qed.
@@ -1788,8 +1788,8 @@ have ppm1 : 0 < pow (1 - p) by apply: bpow_gt_0.
 have s'_gt_0:= s'_gt_0.
 have Fs': format s' by apply: generic_format_round.
 have ups : ulp (Ulp.pred beta fexp s') = pow (p -1).
-  rewrite ulp_neq_0.
-    rewrite /cexp (mag_unique_pos beta _ (2 * p - 1)).
+  rewrite ulp_neq_0; last first.
+    rewrite /cexp (mag_unique_pos beta _ (2 * p - 1)); last first.
       by rewrite /fexp; congr bpow; lia.
     have -> : (2 * p - 1 - 1 = 2 * p - 2)%Z by lia.
     lra.
@@ -1802,7 +1802,7 @@ case : (Rlt_le_dec 0 eps)=> e'0.
  split; try lra.
   move: eb; rewrite Rabs_pos_eq;  lra.
 case: e'0=>[e'0|->]; last by rewrite Rplus_0_r round_generic.
-move:eb; rewrite Rabs_left; last lra; move=> eb.
+move:eb; rewrite Rabs_left; first lra; move=> eb.
 have Zff : round beta fexp Zfloor (s' + eps) = s' - pow (p - 1).
 have->: s' + eps = s' - (- eps) by lra.
    rewrite -psE;  apply: round_DN_minus_eps_pos=>//; lra.
@@ -1826,8 +1826,8 @@ have s'pos : 0 < s'.
   by apply: Rlt_0_sqr; move:bpos; lra.
 have Fs': format s' by apply: generic_format_round.
 have ups : ulp (Ulp.pred beta fexp s') = pow (p -1).
-  rewrite ulp_neq_0.
-    rewrite /cexp (mag_unique_pos beta _ (2 * p - 1)).
+  rewrite ulp_neq_0; last first.
+    rewrite /cexp (mag_unique_pos beta _ (2 * p - 1)); last first.
       by rewrite /fexp; congr bpow; lia.
     by have -> : (2 * p - 1 - 1 = 2 * p - 2)%Z by lia.
   by have := bpow_gt_0 beta (2 * p - 2); lra.
@@ -1871,17 +1871,17 @@ Proof.
 have u_gt_0 := u_gt_0.
 have bpp:= bpow_gt_0 beta (1 -p).
 rewrite rsE sE ulpfE /g.
-rewrite [X in _ <= X](_ : _ = pow (p - 1) - (IZR n)²); last by lra.
+rewrite [X in _ <= X](_ : _ = pow (p - 1) - (IZR n)²); first by lra.
 apply: Rle_trans (_ : pow (p - 1) - (Rsqr (sqrt (/2 * pow (p -1)) + 1)) <= _).
   apply: Req_le.
   have su: /u = 2 * pow (p -1).
     rewrite /u Rinv_mult -bpow_opp.
     have ->: (- ( 1 - p) = p - 1)%Z by lia.
     by lra.
-  rewrite sqrt_mult; [|lra|lra].
+  rewrite sqrt_mult; [lra|lra|].
   rewrite -sqrt_Rinv //.
-  rewrite su sqrt_mult; [|lra|lra].
-  rewrite sqrt_Rinv /Rsqr; last lra.
+  rewrite su sqrt_mult; [lra|lra|].
+  rewrite sqrt_Rinv /Rsqr; first by lra.
   have Hs : sqrt 2 ^ 2 = 2 by rewrite -Rsqr_pow2 Rsqr_sqrt; lra.
   have Hp : sqrt (pow (p - 1)) ^ 2 = pow (p - 1) 
     by rewrite -Rsqr_pow2 Rsqr_sqrt; lra.
@@ -1909,7 +1909,7 @@ have bbpos: 0 < bb.
 have ubble: ulp bb <= bb.
   apply: (Rle_trans _  (Rabs bb  * bpow beta (1 - p))).
     by apply: ulp_FLX_le.
-  rewrite Rabs_pos_eq; last by lra.
+  rewrite Rabs_pos_eq; first by lra.
   rewrite  -{2}(Rmult_1_r bb).
   apply: Rmult_le_compat_l; first by lra.
   have ->: 1 = pow 0 by [].
@@ -1926,7 +1926,7 @@ apply/Req_le/Rminus_diag_uniq; rewrite /Rsqr Rinv_mult.
 apply: (Rle_trans _ (Rsqr (bb - ulp bb))); last first.
   by apply: Rsqr_le_abs_1; rewrite  !Rabs_pos_eq; lra.
 have->: bb - ulp bb = bb * (1 - /bb* ulp bb) by field; lra.
-rewrite Rsqr_mult Rsqr_sqrt; last lra.
+rewrite Rsqr_mult Rsqr_sqrt; first by lra.
 apply: Rmult_le_compat_l; first lra.
 have ulei2: u <= /2.
   rewrite /u; suff: pow ( 1 -p) <= 1 by lra.
@@ -1938,7 +1938,7 @@ have hbb: / bb * ulp bb <= 1.
 apply: Rsqr_incr_1; [|lra|lra].
 suff: / bb * ulp bb <= 2*u by lra.
 apply: (Rmult_le_reg_l bb); first by nra.
-rewrite -Rmult_assoc Rinv_r; last by lra.
+rewrite -Rmult_assoc Rinv_r; first by lra.
 case:( error_bound_ulp_u bb)=> _ .
 rewrite Rabs_pos_eq; lra.
 Qed.
@@ -1991,7 +1991,7 @@ Proof. by rewrite -Rsqr_pow2 Rsqr_sqrt; move:u_gt_0; lra. Qed.
 
 Fact su3 : sqrt u ^ 3 = u * sqrt u.
 Proof. 
-by rewrite -[X in X *_]Rsqr_sqrt /Rsqr; first lra; move: u_gt_0;  lra. 
+by rewrite -[X in X *_]Rsqr_sqrt /Rsqr; last lra; move: u_gt_0;  lra. 
 Qed.
 
 Fact su4 : sqrt u ^4 = u^2. 
@@ -2026,7 +2026,7 @@ have phiudpos:= phiudpos.
 have phiulb: 2 * u - 8 * u * sqrt u - 4 * u² < phiu.
   rewrite /phiu.
   apply: (Rmult_lt_reg_r phiud)=>//.
-  rewrite (Rmult_assoc phiun) Rinv_l ?Rmult_1_r; last by lra.
+  rewrite (Rmult_assoc phiun) Rinv_l ?Rmult_1_r; first by lra.
   suff: 0 < phiun - (2 * u - 8 * u * sqrt u - 4 * u²) * phiud by lra.
   rewrite /phiun /phiud /Rsqr !(su3, su2, su4).
   by nra.
@@ -2035,9 +2035,9 @@ have hu :  0 < 2 * u - 8 * u * sqrt u - 4 * u^2.
   have->: 4 = sqrt 16 .
     have->: 16 = Rsqr 4 by rewrite /Rsqr ; lra.
     by rewrite sqrt_Rsqr; lra.
-  rewrite -sqrt_mult; [|lra|lra].
+  rewrite -sqrt_mult; [lra|lra|].
   apply: Rsqr_incrst_0; [|apply: sqrt_ge_0|lra].
-  rewrite Rsqr_sqrt; last by lra.
+  rewrite Rsqr_sqrt; first by lra.
   suff: 0 <(1 - 2 * u)² - 16 * u by lra.
   rewrite /Rsqr /u.
   set ppm1 := pow (1 - p).
@@ -2052,7 +2052,7 @@ have phiupos: 0 < phiu.
 have iphiupos: 0 < /phiu by apply: Rinv_0_lt_compat.
 apply: (Rle_trans _ (/ 2 * / u - / sqrt u - 2 + u)) =>//.
 apply: (Rmult_le_reg_l (/phiu)); first by lra.
-rewrite -Rmult_assoc Rinv_l ?Rmult_1_l; last lra.
+rewrite -Rmult_assoc Rinv_l ?Rmult_1_l; first by lra.
 have->: /phiu = phiud/phiun.
   rewrite /phiu.
   apply: Rinv_div.
@@ -2062,7 +2062,7 @@ rewrite /phiun /phiud.
 have Rle_minus0: forall x y , 0 <= x - y -> y <= x by move=> *; lra.
 apply: Rle_minus0; rewrite sqrt_Rinv //.
 rewrite /Rsqr.
-rewrite [X in _ <= X](_ : _ = 0); first by lra.
+rewrite [X in _ <= X](_ : _ = 0); last by lra.
 field[su3 su2 su4]; nra.
 Qed.
 
@@ -2086,7 +2086,7 @@ have phiudpos:= phiudpos.
 have phiulb: 2 * u - 8 * u * sqrt u - 4 * u² < phiu.
   rewrite /phiu.
   apply: (Rmult_lt_reg_r phiud)=>//.
-  rewrite (Rmult_assoc phiun) Rinv_l ?Rmult_1_r; last by lra.
+  rewrite (Rmult_assoc phiun) Rinv_l ?Rmult_1_r; first by lra.
   suff: 0 < phiun - (2 * u - 8 * u * sqrt u - 4 * u²) * phiud by lra.
   rewrite /phiun /phiud /Rsqr !(su3, su2, su4).
   by nra.
@@ -2095,9 +2095,9 @@ have hu :  0 < 2 * u - 8 * u * sqrt u - 4 * u^2.
   have->: 4 = sqrt 16 .
     have->: 16 = Rsqr 4 by rewrite /Rsqr ; lra.
     by rewrite sqrt_Rsqr; lra.
-  rewrite -sqrt_mult; [|lra|lra].
+  rewrite -sqrt_mult; [lra|lra|].
   apply: Rsqr_incrst_0; [|apply: sqrt_ge_0|lra].
-  rewrite Rsqr_sqrt; last by lra.
+  rewrite Rsqr_sqrt; first by lra.
   suff: 0 < (1 - 2 * u)² - 16 * u by lra.
   rewrite /Rsqr /u.
   set ppm1:= pow (1 - p).
@@ -2112,7 +2112,7 @@ have phiupos: 0 < phiu.
 have iphiupos: 0 < /phiu by apply: Rinv_0_lt_compat.
 apply: (Rle_trans _ (/ 2 * / u - / sqrt u - 2 + u)) =>//.
 apply: Rmult_le_reg_l iphiupos _.
-rewrite -Rmult_assoc Rinv_l ?Rmult_1_l; last by lra.
+rewrite -Rmult_assoc Rinv_l ?Rmult_1_l; first by lra.
 have->: / phiu = phiud / phiun.
   rewrite /phiu.
   by apply: Rinv_div.
@@ -2122,7 +2122,7 @@ rewrite /phiun /phiud.
 have Rle_minus0: forall x y , 0 <= x - y -> y <= x by move=>*; lra.
 apply: Rle_minus0; rewrite sqrt_Rinv //.
 rewrite /Rsqr.
-rewrite [X in _ <= X](_ : _ = 0); first by lra.
+rewrite [X in _ <= X](_ : _ = 0); last by lra.
 field[su3 su2 su4]; nra.
 Qed.
 
@@ -2145,7 +2145,7 @@ have u2pos: 0 < u^2 by nra.
 have phiulb: 2 * u - 8 * u * sqrt u - 4 * u² < phiu.
   rewrite /phiu.
   apply: (Rmult_lt_reg_r phiud)=>//.
-  rewrite (Rmult_assoc phiun) Rinv_l ?Rmult_1_r; last by lra.
+  rewrite (Rmult_assoc phiun) Rinv_l ?Rmult_1_r; first by lra.
   suff: 0 < phiun - (2 * u - 8 * u * sqrt u - 4 * u²) * phiud by lra.
   by rewrite /phiun /phiud /Rsqr !(su3, su2, su4); nra.
 have hu :  0 < 2 * u - 8 * u * sqrt u - 4 * u^2.
@@ -2153,9 +2153,9 @@ have hu :  0 < 2 * u - 8 * u * sqrt u - 4 * u^2.
   have->: 4 = sqrt 16 .
     have->: 16 = Rsqr 4 by rewrite /Rsqr ; lra.
     rewrite sqrt_Rsqr; lra.
-    rewrite -sqrt_mult; [|lra|lra].
+    rewrite -sqrt_mult; [lra|lra|].
   apply: Rsqr_incrst_0; [|apply: sqrt_ge_0|lra].  
-  rewrite Rsqr_sqrt; last by lra.
+  rewrite Rsqr_sqrt; first by lra.
   suff: 0 < (1 - 2 * u)² - 16 * u by lra.
   rewrite /Rsqr /u.
   set ppm1:= pow (1 - p).
@@ -2172,7 +2172,7 @@ clear - phiulb rel_err1_R   Cmodz_gt_0 Hbeta2 Hp2 choice_sym s' f g beta12.
 apply: (Rlt_le_trans _ phiu)=>//.
 apply: (Rle_trans _  (Rabs (r1 - r) / Cmod z)); last lra.
 apply: (Rmult_le_reg_r (Cmod z))=>//.
-rewrite (Rmult_assoc (Rabs _)) Rinv_l ?Rmult_1_r; last lra.
+rewrite (Rmult_assoc (Rabs _)) Rinv_l ?Rmult_1_r; first by lra.
 by apply: rel_err1_aux.
 Qed.
 
@@ -2214,7 +2214,7 @@ have u2pos: 0 < u^2 by nra.
 have phiulb: 2 * u - 8 * u * sqrt u - 4 * u² < phiu.
   rewrite /phiu.
   apply: (Rmult_lt_reg_r phiud)=>//.
-  rewrite (Rmult_assoc phiun) Rinv_l ?Rmult_1_r; last by lra.
+  rewrite (Rmult_assoc phiun) Rinv_l ?Rmult_1_r; first by lra.
   suff: 0 < phiun - (2 * u - 8 * u * sqrt u - 4 * u²) * phiud by lra.
   by rewrite /phiun /phiud /Rsqr !(su3, su2, su4); nra.
 have hu :  0 < 2 * u - 8 * u * sqrt u - 4 * u^2.
@@ -2222,9 +2222,9 @@ have hu :  0 < 2 * u - 8 * u * sqrt u - 4 * u^2.
   have->: 4 = sqrt 16 .
     have->: 16 = Rsqr 4 by rewrite /Rsqr ; lra.
     by rewrite sqrt_Rsqr; lra.
-  rewrite -sqrt_mult; [|lra|lra].
+  rewrite -sqrt_mult; [lra|lra|].
   apply: Rsqr_incrst_0; [|apply: sqrt_ge_0|lra].
-  rewrite Rsqr_sqrt; last by lra.
+  rewrite Rsqr_sqrt; first by lra.
   suff: 0 < (1 - 2 * u)² - 16 * u by lra.
   rewrite /Rsqr /u.
   set ppm1:= pow (1 - p).
@@ -2242,7 +2242,7 @@ clear - phiulb rel_err1_R r1 r3 Cmodz_gt_0 Hbeta2 Hp2
 apply: Rlt_le_trans phiulb _.
 apply: (Rle_trans _  (Rabs (r3 - r) / Cmod z)).
   apply: (Rmult_le_reg_r (Cmod z))=>//.
-  rewrite (Rmult_assoc (Rabs _)) Rinv_l ?Rmult_1_r; last by lra.
+  rewrite (Rmult_assoc (Rabs _)) Rinv_l ?Rmult_1_r; first by lra.
   rewrite r3Er1.
   by apply: rel_err1_aux.
 move: rel_err_R'.
@@ -2251,13 +2251,13 @@ apply.
 Qed.
 
 (* Lemma 4.2 *)
-Notation RN_lt_pos := (RN_lt_pos beta Hp2 choice).
+Abbreviation RN_lt_pos := (RN_lt_pos beta Hp2 choice).
 
 End A1_A3_certificates.
 
 Section A2_certificate.
 
-Local Notation RD := (round beta fexp Zfloor).
+Local Abbreviation RD := (round beta fexp Zfloor).
 
 Let a :=  RD ((1 - u) * sqrt (/2 * pow (p -1))).
 
@@ -2272,7 +2272,7 @@ have: 0 < sqrt (/2 * pow( p - 1)).
 move:u_lt_1; nra.
 Qed.
  
-Notation c := (a + Ci *b)%C.
+Abbreviation c := (a + Ci *b)%C.
 
 Let z := (c * c)%C.
 
@@ -2292,7 +2292,7 @@ have isu_gt_0:= (Rinv_0_lt_compat _  supos).
 have apos:= a2pos.
 have->:  /4 * (1 - u)² * / u = Rsqr (/2 * ( 1 - u) * (sqrt (/u))).
   rewrite !Rsqr_mult Rsqr_sqrt /Rsqr; lra.
-rewrite sqrt_Rinv; last lra.
+rewrite sqrt_Rinv; first by lra.
 apply: Rsqr_incr_1;  try nra.
 rewrite /a.
 set aa :=(_ *_).
@@ -2304,8 +2304,8 @@ have->: (pow (p - 1)) = /2 * /u.
   have ->: (p - 1 = - (1 - p))%Z by lia.
   have hp:= (bpow_gt_0 beta (1 - p)).
   rewrite /u bpow_opp; field; lra.
-rewrite -Rmult_assoc sqrt_mult; [|lra|lra].
-rewrite (sqrt_Rsqr (/2)); last by lra.
+rewrite -Rmult_assoc sqrt_mult; [lra|lra|].
+rewrite (sqrt_Rsqr (/2)); first by lra.
 rewrite sqrt_Rinv; try field; lra.
 Qed.
 
@@ -2326,20 +2326,20 @@ apply: (Rle_trans _ (/4 * Rsqr (1 -u) * /u +  (/4 * (/u)^2 +
     by apply: a2_ub.
   by rewrite -bubE; apply: b2ub.
 by apply/Req_le/Rminus_diag_uniq; rewrite /Rsqr Rinv_mult ?sqrt_Rinv;
-    [field [su2]; nra|lra].
+    [lra|field [su2]; nra].
 Qed.
 
-Notation s := (Rsqr b).
-Notation s' := (RN s).
-Notation e1 := (Rsqr a - RN (Rsqr a)).
-(* Notation e2 := (s - s'). *)
-Notation e2 := (s' - s).
-Notation r := z.1.
+Abbreviation s := (Rsqr b).
+Abbreviation s' := (RN s).
+Abbreviation e1 := (Rsqr a - RN (Rsqr a)).
+(* Abbreviation e2 := (s - s'). *)
+Abbreviation e2 := (s' - s).
+Abbreviation r := z.1.
 Fact rE : r = Rsqr a - s.
 Proof. by rewrite /= /Rsqr ;  lra. Qed.
 
-Notation  z2 := (zh two c c) .
-Notation r2 := z2.1.
+Abbreviation  z2 := (zh two c c) .
+Abbreviation r2 := z2.1.
 Let e' := (RN (e1 + e2)).
 
 (* 4.14 *)
@@ -2351,11 +2351,11 @@ rewrite !RN_sym //.
 have->:  (- s - - s') =  s' - s  by lra.
 congr  (RN (_ + _)).
 congr RN.
-rewrite round_generic.
-congr Rplus; rewrite round_generic //.
-apply: Mult_error.mult_error_FLX; apply: Fb.
-rewrite - Ropp_minus_distr; 
-  apply/generic_format_opp/Mult_error.mult_error_FLX; apply: Fa2.
+rewrite round_generic; last first.
+  congr Rplus; rewrite round_generic //.
+  by apply: Mult_error.mult_error_FLX; apply: Fb.
+by rewrite - Ropp_minus_distr; 
+   apply/generic_format_opp/Mult_error.mult_error_FLX; apply: Fa2.
 Qed.
 
 Hypothesis beta12 : 12 <= pow (p -1). 
@@ -2367,7 +2367,7 @@ have ult1:= u_lt_1.
 have apos:= a2pos.
 have bpos:= bpos.
 have bpm1:= (bpow_gt_0 beta (p - 1)).
-apply/Rsqr_lt_abs_1; rewrite !Rabs_pos_eq;[|lra|lra].
+apply/Rsqr_lt_abs_1; rewrite !Rabs_pos_eq;[lra|lra|].
 rewrite /a /b.
 set x := (_ *_).
 apply/(Rle_lt_trans _ x); first by case:(round_DN_UP_le beta Hp2 x).
@@ -2401,7 +2401,7 @@ have su3:= su3.
 suff e2_pos: 0 < e2 by split=>//; rewrite errsE; move: bpow12; lra.
 apply: Rlt_le_trans (_ : / 4 * / u - / sqrt u - 1 <= _); last by lra.
 rewrite [X in _ < X](_ : _ =  (-4 * u * sqrt u - 4 * u + sqrt u) / 
-                              (4 * u * sqrt u)); last by field; lra.
+                              (4 * u * sqrt u)); first by field; lra.
 apply: Rdiv_lt_0_compat; last by nra.
 have->:  -4 * u * sqrt u - 4 * u + sqrt u = 
          sqrt u * (- 4 * u - 4 * sqrt u + 1) by nra.
@@ -2414,8 +2414,8 @@ have i12: pow (1 -p ) <= /12.
 suff: 12 * sqrt (/ 2 * pow (1 - p)) < 3 - /2 by lra.
 suff: sqrt (/ 2 * pow (1 - p)) < 5/24 by lra.
 apply: Rsqr_incrst_0; [|apply: sqrt_ge_0|lra].
-rewrite Rsqr_sqrt /Rsqr; first by lra.
-by have := bpow_ge_0 beta (1 -p); lra.
+rewrite Rsqr_sqrt /Rsqr; last by lra.
+by have := bpow_ge_0 beta (1 - p); lra.
 Qed.
 
 
@@ -2436,10 +2436,9 @@ Proof. by  rewrite /y; move:(bpow_gt_0 beta (p - 2)); lra. Qed.
 Fact uyE : ulp y = pow (- (1)).
 Proof.
 have yb := yb.
-rewrite /y ulp_neq_0 /cexp /fexp ?(mag_unique_pos _ _ (p - 1)); 
-  last by lra.
-  by congr bpow; lia.
-by have -> : (p - 1 - 1 = p - 2)%Z by lia.
+rewrite /y ulp_neq_0 /cexp /fexp ?(mag_unique_pos _ _ (p - 1)); first by lra.
+  by have -> : (p - 1 - 1 = p - 2)%Z by lia.
+by congr bpow; lia.
 Qed.
 
 Fact uyle2 : ulp y <= /2.
@@ -2478,7 +2477,7 @@ have supos:= (sqrt_lt_R0 _ u_gt_0).
 have a2_ub:= a2_ub.
 apply/(Rle_trans _ (u * (Rsqr a))); rewrite /e1.
   have->: (a² + - RN a²) = - (RN a² - a²) by lra.
-  rewrite Rabs_Ropp -[X in _ <= _*X]Rabs_pos_eq; last by apply/Rle_0_sqr.
+  rewrite Rabs_Ropp -[X in _ <= _*X]Rabs_pos_eq; first by apply/Rle_0_sqr.
   move:(error_bound_ulp_u (Rsqr a)); lra.
 by apply/(Rmult_le_reg_l (/u)); rewrite // -Rmult_assoc Rinv_l ?Rmult_1_l; nra.
 Qed.
@@ -2533,8 +2532,8 @@ have s'_gt_0:= s'_gt_0.
 have sb := sb.
 have Fs': format s' by apply: generic_format_round.
 have ups : ulp (Ulp.pred beta fexp s') = pow (p -1).
-  rewrite ulp_neq_0.
-    rewrite /cexp (mag_unique_pos beta _ (2 * p - 1)).
+  rewrite ulp_neq_0; last first.
+    rewrite /cexp (mag_unique_pos beta _ (2 * p - 1)); last first.
       by rewrite /fexp; congr bpow; lia.
     have -> : (2 * p - 1 - 1 = 2 * p - 2)%Z by lia.
     lra.
@@ -2569,8 +2568,8 @@ have s'_gt_0:= (s'_gt_0 beta12).
 have sb := sb.
 have Fs': format s' by apply: generic_format_round.
 have ups : ulp (Ulp.pred beta fexp s') = pow (p -1).
-  rewrite ulp_neq_0.
-    rewrite /cexp (mag_unique_pos beta _ (2 * p - 1)).
+  rewrite ulp_neq_0; last first.
+    rewrite /cexp (mag_unique_pos beta _ (2 * p - 1)); last first.
       by rewrite /fexp; congr bpow; lia.
     have -> : (2 * p - 1 - 1 = 2 * p - 2)%Z by lia.
     lra.
@@ -2651,7 +2650,7 @@ apply/error_le_ulp.
  move/Rabs_le_inv; lra.
 suff : ulp aaa <= 2 * u * aaa by lra.
 rewrite -{2}(Rabs_pos_eq aaa) // Rmult_comm  /u -(Rmult_assoc 2) Rinv_r;
-    last lra.
+    first by lra.
 by rewrite Rmult_1_l; apply/ulp_FLX_le.
 Qed.
 
@@ -2659,9 +2658,9 @@ Qed.
 Fact  ui24 : u <= /24.
 Proof.
 move: beta12 ; rewrite /u.
-  have-> : (p - 1 = - ( 1 - p))%Z by lia.
-  rewrite bpow_opp.
-  move/(Rmult_le_compat_r (pow (1 - p))); rewrite Rinv_l; 
+have-> : (p - 1 = - ( 1 - p))%Z by lia.
+rewrite bpow_opp.
+by move/(Rmult_le_compat_r (pow (1 - p))); rewrite Rinv_l; 
    move: (bpow_gt_0 beta (1 -p)); lra.
 Qed.
 
@@ -2710,7 +2709,7 @@ apply/(Rle_lt_trans _ ( (2 * u - 8 * u * sqrt u - 6 * u²)*
 apply/Rlt_0_minus.
 rewrite /Rsqr; field_simplify[su2 su3 su4]; last lra. 
 apply/(Rmult_lt_reg_r (8 * sqrt u * u ^ 2)); first  nra.
-rewrite Rmult_0_l (Rmult_assoc _ (/ _)) Rinv_l ?Rmult_1_r; last nra.
+rewrite Rmult_0_l (Rmult_assoc _ (/ _)) Rinv_l ?Rmult_1_r; first by nra.
 have->:   20 * sqrt u * u ^ 5 - 4 * sqrt u * u ^ 4 +
   154 * sqrt u * u ^ 3 + 16 * u ^ 5 + 80 * u ^ 4 +
   104 * u ^ 3 =
@@ -2749,8 +2748,8 @@ have lb_pos:   0 < 2 * u - 8 * u * sqrt u - 6 * u² by rewrite /Rsqr; nra.
 apply: (Rlt_le_trans _  (Rabs (r2 - r) / Cmod z)); last first.
   by apply/rel_err_R; case; lra.
 apply: (Rmult_lt_reg_r (Cmod z))=>//.
-  rewrite (Rmult_assoc (Rabs _)) Rinv_l ?Rmult_1_r; last by lra.
-apply/rel_err2_r.
+  rewrite (Rmult_assoc (Rabs _)) Rinv_l ?Rmult_1_r; first by lra.
+by apply/rel_err2_r.
 Qed.
 
 (* Corollary 4.1 *)
@@ -2770,7 +2769,7 @@ have r2Er0:  r2 = r0 by rewrite r2e' /r0 /z0 /= !Rsimp01 Ra2s'.
 have r'Er2: r' = r2 by rewrite /= !Rsimp01 /r'. 
 have h1:  2 * u - 8 * u * sqrt u - 6 * u² < Rabs (r0 - r) / Cmod z.
   apply/(Rmult_lt_reg_r (Cmod z))=>//.
-  rewrite (Rmult_assoc (Rabs _)) Rinv_l ?Rmult_1_r; last by lra.
+  rewrite (Rmult_assoc (Rabs _)) Rinv_l ?Rmult_1_r; first by lra.
   rewrite -r2Er0.
   by apply/rel_err2_r.
 split.
@@ -2848,7 +2847,7 @@ rewrite /d.
 congr (_ - _); rewrite betaE mult_IZR.
 suff ->:  Ztrunc ((2 * IZR z + 1) / 2) = z by lra.
 have ->: ((2 * IZR z + 1) / 2) = IZR z + /2 by field.
-rewrite Ztrunc_floor; last first.
+rewrite Ztrunc_floor.
   suff : 0 < IZR z by lra.
   apply/IZR_lt; lia.
 by apply/Zfloor_imp; rewrite plus_IZR; lra.
@@ -2861,7 +2860,7 @@ have z1: (1 <= z)%Z by lia.
 rewrite /d.
 congr (_ - _); rewrite betaE plus_IZR mult_IZR.
 have  ->:   ((2 * IZR z + 1 + 1) / 2) = IZR z + 1 by lra.
-rewrite Ztrunc_floor; last first.
+rewrite Ztrunc_floor.
   suff : 0 < IZR z by lra.
   apply/IZR_lt; lia.
 rewrite -plus_IZR.
