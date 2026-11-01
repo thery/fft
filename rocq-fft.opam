@@ -22,7 +22,7 @@ depends: [
   "rocq-mathcomp-ssreflect" {(>= "2.6.0")}
   "rocq-mathcomp-algebra" {(>= "2.6.0")}
   "coq-flocq" {(>= "4.2.2")}
-  "coq-interval" {(>= "4.11.5)}
+  "coq-interval" {(>= "4.11.5")}
   "coq-coquelicot" {(>= "3.4.5")}
 ]
 
