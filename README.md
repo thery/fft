@@ -14,15 +14,6 @@ Follow the instructions on https://github.com/coq-community/templates to regener
 
 This repository contains Rocq-proofs about the Fast Fourier Transform
 
-```coq
-Fixpoint fft (n : nat) (w : R) (p : {poly R}) : {poly R} := 
-if n is n1.+1 then
-  let ev := fft n1 (w ^+ 2) (even_poly p) in
-  let ov := fft n1 (w ^+ 2) (odd_poly p) in
-  poly_(i < 2 ^ n1.+1) let j := (i %% 2 ^ n1)%N in ev`_j + ov`_ j * w ^+ i 
-else (p`_0)%:P.
-```
-
 ## Meta
 
 - Author(s):
