@@ -6,7 +6,7 @@ Follow the instructions on https://github.com/coq-community/templates to regener
 
 [![Docker CI][docker-action-shield]][docker-action-link]
 
-[docker-action-shield]: https://github.com/thery/fft/actions/workflows/docker-action.yml/badge.svg?branch=master
+[docker-action-shield]: https://github.com/thery/fft/actions/workflows/docker-action.yml/badge.svg?branch=main
 [docker-action-link]: https://github.com/thery/fft/actions/workflows/docker-action.yml
 
 
@@ -31,7 +31,15 @@ This repository contains Rocq proofs about the Fast Fourier Transform
 
 ## Building and installation instructions
 
-To build and install manually, you need to make sure that all the
+The easiest way to install the latest released version of Fft
+is via [OPAM](https://opam.ocaml.org/doc/Install.html):
+
+```shell
+opam repo add rocq-released https://rocq-prover.org/opam/released
+opam install rocq-fft
+```
+
+To instead build and install manually, you need to make sure that all the
 libraries this development depends on are installed.  The easiest way to do that
 is still to rely on opam:
 
