@@ -12,7 +12,7 @@ Follow the instructions on https://github.com/coq-community/templates to regener
 
 
 
-This repository contains Rocq-proofs about the Fast Fourier Transform
+This repository contains Rocq proofs about the Fast Fourier Transform
 
 ## Meta
 

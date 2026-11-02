@@ -12,7 +12,7 @@ license: "MIT"
 
 synopsis: "Formalising FFT in Rocq"
 description: """
-This repository contains Rocq-proofs about the Fast Fourier Transform"""
+This repository contains Rocq proofs about the Fast Fourier Transform"""
 
 build: [make "-j%{jobs}%"]
 install: [make "install"]
